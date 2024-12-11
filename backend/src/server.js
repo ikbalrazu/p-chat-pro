@@ -1,3 +1,6 @@
+// const app = require('./app');
+// const dotenv = require('dotenv');
+
 import app from './app.js';
 import dotenv from 'dotenv';
 import { dbConnect } from './config/db.connect.js';
