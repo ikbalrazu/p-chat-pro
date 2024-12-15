@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { axiosInstance } from "../lib/axios";
+import toast from "react-hot-toast";
 
 export const useAuthStore = create((set) => ({
     authUser: null,
@@ -7,6 +8,7 @@ export const useAuthStore = create((set) => ({
     isLoggingIn: false,
     isUpdatingProfile: false,
     isCheckingAuth: true,
+    userProfileShow: false,
 
     checkAuth: async()=>{
         try {
@@ -14,7 +16,8 @@ export const useAuthStore = create((set) => ({
             set({authUser: res.data});
             
         } catch (error) {
-            console.log("Error in checkAuth:", error.message);
+            console.log("Error in checkAuth:", error);
+            set({ authUser: null });
         }finally{
             set({isCheckingAuth: false});
         }
@@ -24,10 +27,11 @@ export const useAuthStore = create((set) => ({
         set({isSigningUp: true});
         try {
             const res = await axiosInstance.post("/auth/signup", data);
-            console.log(res.data);
+            toast.success("Account created successfully");
             set({ authUser: res.data });
         } catch (error) {
-            console.log("Error in signup:", error.message);
+            toast.dismiss();
+            toast.error(error.response.data.message);
         }finally{
             set({ isSigningUp: false });
         }
@@ -38,11 +42,22 @@ export const useAuthStore = create((set) => ({
         try {
             const res = await axiosInstance.post("/auth/login", data);
             set({ authUser: res.data });
+            toast.success("Login Successful!")
         } catch (error) {
-            console.log("Error in login:", error.message);
+            toast.dismiss();
+            toast.error(error?.response?.data?.message)
         }finally{
             set({ isLoggingIn: false });
         }
     },
+
+    logout: async()=>{
+        try {
+            await axiosInstance.post("/auth/logout");
+            set({authUser: null});
+        } catch (error) {
+            toast.error(error.response.data.message);
+        }
+    }
 
 }))

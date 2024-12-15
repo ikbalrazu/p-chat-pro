@@ -2,6 +2,9 @@ import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuthStore } from '../store/useAuthStore';
 import { Eye, EyeOff, Loader2, Lock, Mail, MessageSquare } from "lucide-react";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -10,12 +13,29 @@ const Login = () => {
     password:""
   });
 
+  const validationSchema = Yup.object({
+    email: Yup.string()
+      .email("Invalid email address.")
+      .required("Email is required."),
+    password: Yup.string()
+      .min(6, "Password must be at least 6 characters.")
+      .required("Password is required."),
+  });
+
   const {login, isLoggingIn} = useAuthStore();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    login(formData);
-  }
+  const formik = useFormik({
+    initialValues: {
+      fullName: "",
+      email: "",
+      password: "",
+    },
+    validationSchema, // Attach Yup schema
+    onSubmit: (formData) => {
+      login(formData);
+    },
+  });
+
   return (
     <section className='bg-gray-60 min-h-screen flex justify-center items-center'>
       {/* login container */}
@@ -25,23 +45,33 @@ const Login = () => {
       <h1 className='font-bold text-2xl text-[#002D74]'>Login</h1>
       <p className='text-sm mt-4 text-[#002D74]'>If you already a memeber, easily login</p>
 
-      <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
+      <form onSubmit={formik.handleSubmit} className='flex flex-col gap-4'>
+
+        <div className='flex flex-col'>
         <input 
         className='p-2 mt-8 rounded-xl border' 
         type='text' 
         name='email' 
         placeholder='Email'
-        value={formData.email}
-        onChange={(e)=>setFormData({...formData, email: e.target.value})}
+        {...formik.getFieldProps("email")}
         />
+        {formik.touched.email && formik.errors.email ? (
+            <p className='text-red-700 text-sm'>{formik.errors.email}</p>
+          ) : null}
+        </div>
+        
+        <div className='flex flex-col'>
         <input 
         className='p-2 rounded-xl border' 
         type='password' 
         name='password' 
         placeholder='Password'
-        value={formData.password}
-        onChange={(e)=>setFormData({...formData, password: e.target.value})}
+        {...formik.getFieldProps("password")}
         />
+        {formik.touched.password && formik.errors.password ? (
+            <p className='text-red-700 text-sm'>{formik.errors.password}</p>
+        ) : null}
+        </div>
         <button 
         className='bg-[#002D74] rounded-xl text-white py-2'
         disabled={isLoggingIn}

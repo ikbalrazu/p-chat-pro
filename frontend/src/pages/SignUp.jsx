@@ -1,37 +1,37 @@
 import React, {useState} from 'react'
 import { Link } from 'react-router-dom';
-import toast from "react-hot-toast";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 import { useAuthStore } from '../store/useAuthStore';
 
 const SignUp = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [formData, setFormData] = useState({
-    fullName: "",
-    email: "",
-    password: "",
-  });
 
   const { signup, isSigningUp } = useAuthStore();
 
-  const validateForm = () => {
-    if (!formData.fullName.trim()) return toast.error("Full name is required");
-    if (!formData.email.trim()) return toast.error("Email is required");
-    if (!/\S+@\S+\.\S+/.test(formData.email)) return toast.error("Invalid email format");
-    if (!formData.password) return toast.error("Password is required");
-    if (formData.password.length < 6) return toast.error("Password must be at least 6 characters");
+  const validationSchema = Yup.object({
+    fullName: Yup.string()
+      .required("FullName is required.")
+      .min(3, "FullName must be at least 3 characters.").max(32, "FullName must be within 32 characters"),
+    email: Yup.string()
+      .email("Invalid email address.")
+      .required("Email is required."),
+    password: Yup.string()
+      .min(6, "Password must be at least 6 characters.")
+      .required("Password is required."),
+  });
 
-    return true;
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    
-    const success = validateForm();
-    console.log();
-    if (success === true){
+  const formik = useFormik({
+    initialValues: {
+      fullName: "",
+      email: "",
+      password: "",
+    },
+    validationSchema, // Attach Yup schema
+    onSubmit: (formData) => {
       signup(formData);
-    }
-  };
+    },
+  });
 
   return (
     <section className='bg-gray-60 min-h-screen flex justify-center items-center'>
@@ -42,31 +42,48 @@ const SignUp = () => {
       <h1 className='font-bold text-2xl text-[#002D74]'>Sign up</h1>
       <p className='text-sm mt-4 text-[#002D74]'>Get started with free account</p>
 
-      <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
+      <form onSubmit={formik.handleSubmit} className='flex flex-col gap-4'>
+        
+        <div className='flex flex-col'>
         <input 
-        className='p-2 mt-8 rounded-xl border' 
+        className='p-2 mt-8 rounded-xl border'
         type='text' 
         name='fullname' 
         placeholder='Fullname'
-        value={formData.fullName}
-        onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+        {...formik.getFieldProps("fullName")}
         />
+         {formik.touched.fullName && formik.errors.fullName ? (
+            <p className='text-red-700 text-sm'>{formik.errors.fullName}</p>
+          ) : null}
+        </div>
+
+        <div className='flex flex-col'>
         <input 
         className='p-2 rounded-xl border' 
         type='text' 
         name='email' 
         placeholder='Email'
-        value={formData.email}
-        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+        {...formik.getFieldProps("email")}
         />
+        {formik.touched.email && formik.errors.email ? (
+            <p className='text-red-700 text-sm'>{formik.errors.email}</p>
+          ) : null}
+        </div>
+
+        <div className='flex flex-col'>
         <input 
         className='p-2 rounded-xl border' 
         type='password' 
         name='password' 
         placeholder='Password'
-        value={formData.password}
-        onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+        {...formik.getFieldProps("password")}
         />
+        {formik.touched.password && formik.errors.password ? (
+            <p className='text-red-700 text-sm'>{formik.errors.password}</p>
+          ) : null}
+        </div>
+
+
         <button 
         className='bg-[#002D74] rounded-xl text-white py-2'
         type='submit'

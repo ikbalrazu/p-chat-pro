@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import Navbar from './components/Navbar';
-import {Routes, Route, Navigate} from 'react-router-dom';
+import {Routes, Route, Navigate, Outlet} from 'react-router-dom';
 import SignUp from './pages/SignUp';
 import Login from './pages/Login';
 import HomePage from './pages/HomePage';
@@ -8,16 +8,18 @@ import SettingsPage from './pages/SettingsPage';
 import ProfilePage from './pages/ProfilePage';
 import { useAuthStore } from './store/useAuthStore';
 import { Loader } from "lucide-react";
+import { Toaster } from "react-hot-toast";
+import Home from './pages/Home';
+import FindFriends from './components/FindFriends';
 
 const App = () => {
   const {authUser, checkAuth, isCheckingAuth} = useAuthStore();
 
   useEffect(()=>{
     checkAuth();
+    console.log(authUser);
     
   },[checkAuth]);
-
-  console.log({authUser});
 
   if (isCheckingAuth && !authUser){
     return (
@@ -31,15 +33,23 @@ const App = () => {
   return (
     <div>
 
-      <Navbar/>
+      {/* <Navbar/> */}
 
       <Routes>
-      <Route path='/' element={authUser ? <HomePage/> : <Navigate to="/login"/>}/>
+      <Route path='/' element={authUser ? <Home/> : <Navigate to="/login"/>}/>
       <Route path='/signup' element={!authUser ? <SignUp/> : <Navigate to="/" />}/>
       <Route path='/login' element={!authUser ? <Login/> : <Navigate to="/" />}/>
       <Route path='/settings' element={authUser ? <SettingsPage/> : <Navigate to="/login"/>}/>
       <Route path='/profile' element={authUser ? <ProfilePage/> : <Navigate to="/login"/>}/>
       </Routes>
+
+      
+
+      <Toaster
+      position="top-center"
+      reverseOrder={false} 
+      />
+      
     </div>
   )
 }
