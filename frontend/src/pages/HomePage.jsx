@@ -1,45 +1,27 @@
 import React from 'react'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../store/useAuthStore';
-import Sidebar from '../components/Sidebar';
+import Sidebar from '../components/sidebar/Sidebar';
+import Chat from '../components/chat/Chat';
+import Conversation from '../components/conversation/Conversation';
+import UserProfile from '../components/UserProfile';
+import { useUserStore } from '../store/useUserStore';
+import ChatContainer from '../components/ChatContainer';
 
 const HomePage = () => {
   const location = useLocation();
   const {authUser} = useAuthStore();
-
+  const {userProfileShow} = useUserStore();
+  console.log(userProfileShow);
   const basePath = location.pathname === '/'
   return (
-    <div className='grid lg:grid-cols-[300px,1fr] h-screen max-h-screen'>
-      <section className='bg-white lg:block'>
-        {/* <Sidebar/> */}
-      </section>
-      <section>
-        section 2
-      </section>
-      
+    <div className="flex h-screen bg-gray-100">
+      <Sidebar/>
+      {userProfileShow ? <UserProfile/> : <Conversation/>}
+      {/* <Conversation/> */}
+      {/* <Chat/> */}
+      <ChatContainer/>
     </div>
-    // <div className='grid lg:grid-cols-[300px,1fr] h-screen max-h-screen'>
-    //     <section className={`bg-white lg:block`}>
-    //        <Sidebar/>
-    //     </section>
-
-    //     {/**message component**/}
-    //     {/* <section className={`${basePath && "hidden"}`} >
-    //         <Outlet/>
-    //     </section> */}
-
-
-    //     <div className={`justify-center items-center flex-col gap-2 hidden ${!basePath ? "hidden" : "lg:flex" }`}>
-    //         <div>
-    //           {/* <img
-    //             src={logo}
-    //             width={250}
-    //             alt='logo'
-    //           /> */}
-    //         </div>
-    //         <p className='text-lg mt-2 text-slate-500'>Select user to send message</p>
-    //     </div>
-    // </div>
   )
 }
 

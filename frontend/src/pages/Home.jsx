@@ -1,9 +1,11 @@
 import React,{useState} from 'react'
 import Side from '../components/Side'
-import Conversation from '../components/Conversation';
+import Conversation from '../components/conversation/Conversation';
 import { useAuthStore } from '../store/useAuthStore';
 import UserProfile from '../components/UserProfile';
 import { useUserStore } from '../store/useUserStore';
+import MobileFooter from '../components/MobileFooter';
+import DesktopSidebar from '../components/DesktopSidebar';
 
 const Home = () => {
     const {userProfileShow} = useUserStore();
@@ -15,6 +17,8 @@ const Home = () => {
     <div className="flex h-screen bg-gray-100">
       {/* Sidebar */}
       <Side/>
+      {/* <DesktopSidebar/>
+      <MobileFooter/> */}
 
       {/* Conversation List */}
        {userProfileShow ? <UserProfile/> : <Conversation/>}

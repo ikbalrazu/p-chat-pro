@@ -11,6 +11,7 @@ import { Loader } from "lucide-react";
 import { Toaster } from "react-hot-toast";
 import Home from './pages/Home';
 import FindFriends from './components/FindFriends';
+import Conversation from './components/conversation/Conversation';
 
 const App = () => {
   const {authUser, checkAuth, isCheckingAuth} = useAuthStore();
@@ -36,9 +37,10 @@ const App = () => {
       {/* <Navbar/> */}
 
       <Routes>
-      <Route path='/' element={authUser ? <Home/> : <Navigate to="/login"/>}/>
+      <Route path='/' element={authUser ? <HomePage/> : <Navigate to="/login"/>}/>
       <Route path='/signup' element={!authUser ? <SignUp/> : <Navigate to="/" />}/>
       <Route path='/login' element={!authUser ? <Login/> : <Navigate to="/" />}/>
+      <Route path='/conversation' element={authUser ? <Conversation/> : <Navigate to="/login" />}/>
       <Route path='/settings' element={authUser ? <SettingsPage/> : <Navigate to="/login"/>}/>
       <Route path='/profile' element={authUser ? <ProfilePage/> : <Navigate to="/login"/>}/>
       </Routes>
@@ -49,7 +51,7 @@ const App = () => {
       position="top-center"
       reverseOrder={false} 
       />
-      
+      <Outlet/>
     </div>
   )
 }

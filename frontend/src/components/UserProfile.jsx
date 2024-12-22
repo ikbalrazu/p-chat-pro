@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Upload_Profile from "./profile/Upload_Profile";
 
 const UserProfile = () => {
   const [name, setName] = useState("John Doe");
@@ -14,40 +15,21 @@ const UserProfile = () => {
   });
 
   const [isEditing, setIsEditing] = useState(false);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setProfile({ ...profile, [name]: value });
   };
 
   return (
-    <div className="hidden md:block w-80 bg-white border-r border-gray-300 flex flex-col">
-        <div className="bg-white rounded-lg shadow-md p-6 w-full max-w-4xl h-screen">
-        {/* Header */}
-        <h2 className="text-2xl font-bold text-center mb-6">Profile</h2>
-
+    <div className="hidden md:block h-screen w-80 bg-white dark:bg-gray-800  border-r border-gray-300 lg:flex lg:flex-col">
+        {/* <div className="bg-white rounded-lg shadow-md p-6 w-full max-w-4xl h-screen"> */}
         {/* Profile Picture */}
-        <div className="flex flex-col items-center mb-6">
-          <img
-            src={profile.picture}
-            alt="Profile"
-            className="w-32 h-32 rounded-full shadow-md mb-4"
-          />
-          {/* {isEditing ? (
-            <input
-              type="text"
-              name="picture"
-              value={profile.picture}
-              onChange={handleChange}
-              className="border rounded p-2 w-full sm:w-1/2 text-center"
-              placeholder="Profile Picture URL"
-            />
-          ) : null} */}
-        </div>
+        <Upload_Profile/>
 
         {/* User Details */}
         <div 
-        // className="grid grid-cols-1 sm:grid-cols-2 gap-4"
-        className="flex flex-col gap-5"
+        className="flex flex-col gap-3 text-sm px-6"
         >
           <div>
             <label className="block text-gray-700">FullName</label>
@@ -108,60 +90,28 @@ const UserProfile = () => {
               <p className="p-2 bg-gray-100 rounded">{profile.bio}</p>
             )}
           </div>
-
-        </div>
-
-        {/* Edit/Save Buttons */}
-        <div className="flex justify-end mt-6">
+          {/* Edit/Save Buttons */}
+        <div className="flex justify-end mt-2">
           {isEditing ? (
             <button
               onClick={() => setIsEditing(false)}
-              className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+              className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
             >
               Save
             </button>
           ) : (
             <button
               onClick={() => setIsEditing(true)}
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+              className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
             >
               Edit Profile
             </button>
           )}
         </div>
         </div>
-
-
-      {/* <h1 className="text-2xl font-bold mb-4">Update Profile</h1>
-      <div className="flex flex-col items-center">
-        <div className="w-32 h-32 rounded-full bg-gray-300 mb-4"></div>
-        <button className="p-2 bg-green-500 text-white rounded-lg">
-          Change Picture
-        </button>
-      </div>
-      <form className="mt-8 space-y-4">
-        <div>
-          <label className="block text-gray-600">Name</label>
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="w-full p-2 border rounded-lg"
-          />
-        </div>
-        <div>
-          <label className="block text-gray-600">Email</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full p-2 border rounded-lg"
-          />
-        </div>
-        <button className="w-full p-2 bg-green-500 text-white rounded-lg">
-          Save Changes
-        </button>
-      </form> */}
+        
+        
+        {/* </div> */}
     </div>
   );
 };
