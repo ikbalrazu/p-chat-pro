@@ -1,8 +1,11 @@
 import React from 'react';
 import { IoIosArrowBack } from "react-icons/io";
 import { Link } from 'react-router-dom';
+import { useChatStore } from '../../store/useChatStore';
 
 const Chat = () => {
+  const {selectedUser} = useChatStore();
+  console.log(selectedUser);
   return (
     <div className="flex-1 flex flex-col">
         {/* Chat Window */}

@@ -8,13 +8,15 @@ import { NavLink } from 'react-router-dom';
 import ThemeToggle from '../ThemeToggle';
 import Conversation from '../conversation/Conversation';
 import { useUserStore } from '../../store/useUserStore';
+import { useUtilityStore } from '../../store/useUtilityStore';
 
 const Sidebar = () => {
     const {authUser} = useAuthStore();
     const [editUserOpen,setEditUserOpen] = useState(false)
     const [openSearchUser,setOpenSearchUser] = useState(false)
     const {setUserProfileShow} = useUserStore();
-    console.log(authUser);
+    const navigate = useUtilityStore((state) => state.navigate);
+  
   return (
     <div className="
     hidden 
@@ -30,10 +32,11 @@ const Sidebar = () => {
     lg:flex-col 
     items-center 
     py-4
+    overflow-hidden
     ">
       <NavLink 
         className={({isActive})=>`w-12 h-12 flex justify-center items-center cursor-pointer hover:bg-slate-200`}
-        onClick={() => setUserProfileShow(false)}
+        onClick={() => navigate('conversation')}
         title='Conversation'
         >
             <IoChatbubbleEllipses
@@ -41,7 +44,11 @@ const Sidebar = () => {
             />
         </NavLink>
 
-        <div title='Add Friend' className='w-12 h-12 flex justify-center items-center cursor-pointer hover:bg-slate-200 rounded'>
+        <NavLink 
+        title='Add Friend' 
+        className='w-12 h-12 flex justify-center items-center cursor-pointer hover:bg-slate-200 rounded'
+        onClick={()=>navigate("addfriend")}
+        >
             <FaUserPlus size={20}/>
             {/* <Modal
             isOpen={isModalOpen}
@@ -50,12 +57,12 @@ const Sidebar = () => {
             >
             <p>This is a sample popup/modal using Tailwind CSS and React!</p>
             </Modal> */}
-        </div>
+        </NavLink>
 
         <div className="mt-auto mb-4">
           <NavLink 
           className={({isActive})=>`w-10 h-10 bg-purple-500 text-white rounded-full flex items-center justify-center`} 
-          onClick={()=>setUserProfileShow(true)}
+          onClick={()=>navigate("profile")}
           >
                 <Avatar
                     width={40}

@@ -7,20 +7,30 @@ import Conversation from '../components/conversation/Conversation';
 import UserProfile from '../components/UserProfile';
 import { useUserStore } from '../store/useUserStore';
 import ChatContainer from '../components/ChatContainer';
+import { useChatStore } from '../store/useChatStore';
+import NotSelectedUser from '../components/conversation/NotSelectedUser';
+import { useUtilityStore } from '../store/useUtilityStore';
+import AddFriend from '../components/findfriend/AddFriend';
 
 const HomePage = () => {
   const location = useLocation();
   const {authUser} = useAuthStore();
   const {userProfileShow} = useUserStore();
+  const {selectedUser} = useChatStore();
+  const {currentPage} = useUtilityStore();
   console.log(userProfileShow);
   const basePath = location.pathname === '/'
   return (
     <div className="flex h-screen bg-gray-100">
       <Sidebar/>
-      {userProfileShow ? <UserProfile/> : <Conversation/>}
+      <div className="hidden md:block h-screen w-80 bg-white dark:bg-gray-800  border-r border-gray-300 flex flex-col">
+      {currentPage === 'conversation' && <Conversation />}
+      {currentPage === 'profile' && <UserProfile />}
+      {currentPage === 'addfriend' && <AddFriend />}
+      </div>
       {/* <Conversation/> */}
-      {/* <Chat/> */}
-      <ChatContainer/>
+      {!selectedUser ? <NotSelectedUser/> : <Chat/>}
+      {/* <ChatContainer/> */}
     </div>
   )
 }

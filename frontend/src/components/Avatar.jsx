@@ -3,8 +3,6 @@ import { PiUserCircle } from "react-icons/pi";
 
 const Avatar = ({userId,name,width,height,imageUrl}) => {
     let avatarName = "";
-
-    console.log(userId,name,imageUrl);
     
     if(name){
         const splitName = name?.split(" ")

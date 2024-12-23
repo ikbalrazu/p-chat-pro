@@ -117,3 +117,13 @@ export const Unfriend = async(req,res)=>{
 
     res.status(200).json({ message: "User unfriended successfully." });
 }
+
+export const AllFriends = async(req,res)=>{
+  try {
+    const { ids } = req.body; // Expecting an array of IDs
+    const users = await User.find({ _id: { $in: ids } }).select("-password"); // MongoDB `$in` operator
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch users' });
+  }
+} 

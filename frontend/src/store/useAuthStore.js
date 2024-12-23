@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 
 export const useAuthStore = create((set) => ({
     authUser: null,
+    friendList: [],
     isSigningUp: false,
     isLoggingIn: false,
     isUpdatingProfile: false,
@@ -14,6 +15,7 @@ export const useAuthStore = create((set) => ({
         try {
             const res = await axiosInstance.get("/auth/check");
             set({authUser: res.data});
+            set({friendList: res.data.friends});
             
         } catch (error) {
             console.log("Error in checkAuth:", error);

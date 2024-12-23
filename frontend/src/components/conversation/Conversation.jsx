@@ -1,26 +1,10 @@
 import React, {useEffect, useState} from 'react'
-import { Outlet } from 'react-router-dom';
 import { useChatStore } from '../../store/useChatStore';
+import { useAuthStore } from '../../store/useAuthStore';
 
 const Conversation = () => {
   const {getUsers, users, selectedUser, setSelectedUser, isUsersLoading} = useChatStore();
-  const friends = [
-    { id: 1, name: "John Doe" },
-    { id: 2, name: "Jane Smith" },
-    { id: 3, name: "Michael Johnson" },
-    { id: 4, name: "Emily Davis" },
-    { id: 5, name: "Chris Brown" },
-    { id: 1, name: "John Doe" },
-    { id: 2, name: "Jane Smith" },
-    { id: 3, name: "Michael Johnson" },
-    { id: 4, name: "Emily Davis" },
-    { id: 5, name: "Chris Brown" },
-    { id: 1, name: "John Doe" },
-    { id: 2, name: "Jane Smith" },
-    { id: 3, name: "Michael Johnson" },
-    { id: 4, name: "Emily Davis" },
-    { id: 5, name: "Chris Brown" },
-  ];
+  const {authUser, friendList} = useAuthStore();
 
   // State for search input
   const [searchTerm, setSearchTerm] = useState("");
@@ -31,12 +15,12 @@ const Conversation = () => {
   );
 
   useEffect(()=>{
-    console.log(users);
+    console.log(friendList);
     getUsers();
   },[getUsers]);
 
   return (
-    <div className="hidden md:block h-screen w-80 bg-white dark:bg-gray-800  border-r border-gray-300 flex flex-col">
+    <>
     <div className="p-4 flex flex-col items-center justify-between">
         <h2 className="text-md font-semibold text-gray-800 dark:text-white mb-1">Conversations</h2>
         <div className="w-full max-w-md">
@@ -108,7 +92,7 @@ const Conversation = () => {
     </div>
     <div>
     </div>
-  </div>
+    </>
   )
 }
 
