@@ -4,7 +4,7 @@ import { useAuthStore } from '../store/useAuthStore';
 import Sidebar from '../components/sidebar/Sidebar';
 import Chat from '../components/chat/Chat';
 import Conversation from '../components/conversation/Conversation';
-import UserProfile from '../components/UserProfile';
+import UserProfile from '../components/profile/UserProfile';
 import { useUserStore } from '../store/useUserStore';
 import ChatContainer from '../components/ChatContainer';
 import { useChatStore } from '../store/useChatStore';
@@ -14,11 +14,8 @@ import AddFriend from '../components/findfriend/AddFriend';
 
 const HomePage = () => {
   const location = useLocation();
-  const {authUser} = useAuthStore();
-  const {userProfileShow} = useUserStore();
   const {selectedUser} = useChatStore();
   const {currentPage} = useUtilityStore();
-  console.log(userProfileShow);
   const basePath = location.pathname === '/'
   return (
     <div className="flex h-screen bg-gray-100">

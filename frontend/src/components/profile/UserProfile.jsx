@@ -1,17 +1,18 @@
 import React, { useState } from "react";
-import Upload_Profile from "./profile/Upload_Profile";
+import Upload_Profile from "./Upload_Profile";
+import { useAuthStore } from "../../store/useAuthStore";
 
 const UserProfile = () => {
   const [name, setName] = useState("John Doe");
   const [email, setEmail] = useState("john.doe@example.com");
+  const {authUser, updateProfileInfo} = useAuthStore();
 
   const [profile, setProfile] = useState({
-    name: "John Doe",
-    email: "john.doe@example.com",
-    phone: "+1-123-456-7890",
-    bio:"hi my name is iqbal. i am from bangladesh. hi my name is iqbal. i am from bangladesh",
-    picture:
-      "https://randomuser.me/api/portraits/men/1.jpg",
+    fullName: authUser.fullName,
+    email: authUser.email,
+    // phone: "+1-123-456-7890",
+    bio:authUser.bio,
+    // picture: "https://randomuser.me/api/portraits/men/1.jpg",
   });
 
   const [isEditing, setIsEditing] = useState(false);
@@ -19,6 +20,13 @@ const UserProfile = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setProfile({ ...profile, [name]: value });
+  };
+
+  const handleSave = async() => {
+    console.log("Updated Profile:", profile);
+    await updateProfileInfo(profile);
+
+    setIsEditing(false);
   };
 
   return (
@@ -36,13 +44,13 @@ const UserProfile = () => {
             {isEditing ? (
               <input
                 type="text"
-                name="name"
-                value={profile.name}
+                name="fullName"
+                value={profile.fullName}
                 onChange={handleChange}
                 className="border rounded p-2 w-full"
               />
             ) : (
-              <p className="p-2 bg-gray-100 rounded">{profile.name}</p>
+              <p className="p-2 bg-gray-100 rounded">{profile.fullName}</p>
             )}
           </div>
 
@@ -61,7 +69,7 @@ const UserProfile = () => {
             )}
           </div>
 
-          <div>
+          {/* <div>
             <label className="block text-gray-700">Phone</label>
             {isEditing ? (
               <input
@@ -74,27 +82,27 @@ const UserProfile = () => {
             ) : (
               <p className="p-2 bg-gray-100 rounded">{profile.phone}</p>
             )}
-          </div>
+          </div> */}
 
           <div className="h-sm">
             <label className="block text-gray-700">Bio</label>
             {isEditing ? (
               <textarea
                 type="text"
-                name="phone"
+                name="bio"
                 value={profile.bio}
                 onChange={handleChange}
                 className="border rounded p-2 w-full"
               />
             ) : (
-              <p className="p-2 bg-gray-100 rounded">{profile.bio}</p>
+              <p className="p-2 bg-gray-100 rounded h-[40px]">{profile.bio}</p>
             )}
           </div>
           {/* Edit/Save Buttons */}
         <div className="flex justify-end mt-2">
           {isEditing ? (
             <button
-              onClick={() => setIsEditing(false)}
+              onClick={handleSave}
               className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
             >
               Save

@@ -126,4 +126,20 @@ export const AllFriends = async(req,res)=>{
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch users' });
   }
-} 
+}
+
+export const SearchFriends = async(req, res) => {
+  const query = req.query.query || "";
+  console.log(query);
+  try {
+    const friends = await User.find({
+      $or: [
+        { name: { $regex: query, $options: 'i' } },
+        { email: { $regex: query, $options: 'i' } },
+      ],
+    }).select('_id name email');
+    res.status(200).json({friends});
+  } catch (error) {
+    res.status(500).json({ error: 'An error occurred while searching for users.' });
+  }
+}

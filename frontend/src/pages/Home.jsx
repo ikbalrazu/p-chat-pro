@@ -2,7 +2,7 @@ import React,{useState} from 'react'
 import Side from '../components/Side'
 import Conversation from '../components/conversation/Conversation';
 import { useAuthStore } from '../store/useAuthStore';
-import UserProfile from '../components/UserProfile';
+import UserProfile from '../components/profile/UserProfile';
 import { useUserStore } from '../store/useUserStore';
 import MobileFooter from '../components/MobileFooter';
 import DesktopSidebar from '../components/DesktopSidebar';
