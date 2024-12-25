@@ -96,22 +96,51 @@ export const Logout = (req,res) =>{
     }
 }
 
-export const updateProfile = async (req,res) =>{
+export const updateProfilePic = async (req,res) =>{
     try {
         const {profilePic} = req.body;
+        console.log(profilePic)
         const userId = req.user._id;
 
         if(!profilePic){
             return res.status(400).json({message:"Profile pic is required"});
         }
 
-        const uploadResponse = await cloudinary.uploader.upload(profilePic);
-        const updatedUser = await User.findByIdAndUpdate(userId, {profilePic:uploadResponse.secure_url}, {new:true});
+        const user = await User.findById(userId);
+        console.log(user);
+        // Delete the old profile picture from Cloudinary
+        if (user.profilePicId) {
+            await cloudinary.uploader.destroy(user.profilePicId);
+        }
+
+        // Upload the new profile picture
+        const uploadResponse = await cloudinary.uploader.upload(profilePic,{
+            folder: "p-chat-pro",
+            public_id: `${userId}_profile`,
+            // transformation: [
+            //     { width: 300, height: 300, crop: 'fill' },
+            //     { quality: 'auto:low' },
+            // ],
+        });
+        console.log(uploadResponse);
+        // res.status(200).json(uploadResponse);
+        const updatedUser = await User.findByIdAndUpdate(userId, {profilePic:uploadResponse.secure_url, profilePicId:uploadResponse.public_id}, {new:true}).select("-password");
         
         res.status(200).json(updatedUser);
         
     } catch (error) {
         res.status(500).json({message:"Internal Server error"});
+    }
+}
+
+export const updateProfileInfo = async(req,res)=>{
+    try {
+        const profile = req.body;
+        res.status(200).json({message: "success"});
+        console.log(profile);
+        
+    } catch (error) {
+        res.status(500).json({message: "Internal server error"});
     }
 }
 

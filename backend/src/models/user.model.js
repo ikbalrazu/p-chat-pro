@@ -20,6 +20,18 @@ const userSchema = new mongoose.Schema(
             type: String,
             default:"https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg"
         },
+        profilePicId:{
+            type: String,
+            default: null
+        },
+        friends: [{
+            type: mongoose.Schema.Types.ObjectId, 
+            ref: "User"
+        }],
+        friendRequests: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User"
+        }],
         bio:{
             type: String,
             minlength:100
