@@ -1,13 +1,13 @@
 import User from "../models/user.model.js";
 
 export const FriendRequest = async(req,res) => {
-    const {senderId, receiverId} = req.body;
-    console.log(senderId)
-    console.log(receiverId)
+    const {receiverId} = req.body;
+    const senderId = req.user._id;
+
     const sender = await User.findById(senderId);
     const receiver = await User.findById(receiverId);
 
-    if (!senderId || !receiverId) {
+    if (!receiverId) {
         return res.status(400).json({ message: "Both sender and receiver IDs are required." });
     }
 
@@ -129,16 +129,114 @@ export const AllFriends = async(req,res)=>{
 }
 
 export const SearchFriends = async(req, res) => {
-  const query = req.query.query || "";
-  console.log(query);
+  const {query} = req.query || "";
+  const userId = req.user._id;
   try {
-    const friends = await User.find({
-      $or: [
-        { name: { $regex: query, $options: 'i' } },
-        { email: { $regex: query, $options: 'i' } },
-      ],
-    }).select('_id name email');
-    res.status(200).json({friends});
+    const currentUser = await User.findById(userId).select('friends friendRequests');
+    if (!currentUser) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+    const friendsList = currentUser.friends;
+    // const friendRequests = await User.find({ _id: { $in: currentUser.friendRequests } }).select("-password");
+    // const users = await User.find({
+    //   $and: [
+    //       {
+    //           $or: [
+    //               { fullName: { $regex: query, $options: 'i' } },
+    //               { email: { $regex: query, $options: 'i' } }
+    //           ]
+    //       },
+    //       // { _id: { $nin: [...friendsList, ...friendRequests] } }, // Exclude users in the friend list
+    //       { _id: { $nin: friendsList } },
+    //       { _id: { $ne: userId } } // Exclude the current user
+    //   ]
+    // }).select('_id fullName email');
+
+    // const [friendRequests, users] = await Promise.all([
+    //   User.find({ _id: { $in: currentUser.friendRequests } }).select("-password"),
+    //   User.find({
+    //     $and: [
+    //       {
+    //         $or: [
+    //           { fullName: { $regex: query, $options: 'i' } },
+    //           { email: { $regex: query, $options: 'i' } }
+    //         ]
+    //       },
+    //       {$addFields: {INVITED}},
+    //       { _id: { $nin: [...friendsList, ...currentUser.friendRequests] } },
+    //       { _id: { $ne: userId } }
+    //     ]
+    //   }).select('_id fullName email')
+    // ]);
+
+    // const results = await User.aggregate([
+    //   {
+    //     $facet: {
+    //       friendRequests: [
+    //         { $match: { _id: { $in: currentUser.friendRequests } } },
+    //         { $project: { password: 0 } } // Exclude the password field
+    //       ],
+    //       users: [
+    //         { 
+    //           $match: {
+    //             $and: [
+    //               {
+    //                 $or: [
+    //                   { fullName: { $regex: query, $options: 'i' } },
+    //                   { email: { $regex: query, $options: 'i' } }
+    //                 ]
+    //               },
+    //               { _id: { $nin: friendsList } },
+    //               { _id: { $ne: userId } }
+    //             ]
+    //           }
+    //         },
+    //         { $project: { _id: 1, fullName: 1, email: 1 } } // Select only specific fields
+    //       ]
+    //     }
+    //   }
+    // ]);
+    // const { friendRequests, users } = results[0];
+
+    const users = await User.aggregate([
+      {
+        $match: {
+          $and: [
+            {
+              $or: [
+                { fullName: { $regex: query, $options: 'i' } },
+                { email: { $regex: query, $options: 'i' } }
+              ]
+            },
+            { _id: { $nin: friendsList } },
+            // { _id: { $in: currentUser.friendRequests } },
+            { _id: { $ne: userId } }
+          ]
+        }
+      },
+      {
+        $addFields: {
+          invited: {
+            $cond: [
+              { $in: ["$_id", currentUser.friendRequests] }, // Check if the user is in the `friendRequests` list
+              true,
+              false            
+            ]
+          },
+        }
+      },
+      {
+        $project: {
+          _id: 1,
+          fullName: 1,
+          email: 1,
+          invited: 1,
+          profilePic: 1
+        }
+      }
+    ]);
+
+    res.status(200).json({users});
   } catch (error) {
     res.status(500).json({ error: 'An error occurred while searching for users.' });
   }

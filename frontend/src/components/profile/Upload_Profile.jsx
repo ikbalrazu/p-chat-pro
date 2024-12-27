@@ -8,7 +8,6 @@ const Upload_Profile = () => {
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    console.log("handleFileChange");
     if (file && file.size > 2 * 1024 * 1024) { // Limit to 2MB
       toast.error("File size exceeds 2MB. Please choose a smaller file.");
       e.target.value = "";

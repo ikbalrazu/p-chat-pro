@@ -34,7 +34,7 @@ const userSchema = new mongoose.Schema(
         }],
         bio:{
             type: String,
-            minlength:100
+            maxlength:100
         }
     },
     {
