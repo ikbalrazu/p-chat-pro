@@ -1,23 +1,23 @@
 import React, {useEffect, useState} from 'react'
 import { useChatStore } from '../../store/useChatStore';
 import { useAuthStore } from '../../store/useAuthStore';
+import { useUserStore } from '../../store/useUserStore';
 
 const Conversation = () => {
   const {getUsers, users, selectedUser, setSelectedUser, isUsersLoading} = useChatStore();
-  const {authUser, friendList} = useAuthStore();
+  const {getMyFriends, myFriends} = useUserStore();
 
   // State for search input
   const [searchTerm, setSearchTerm] = useState("");
 
   // Filter friends based on search term
-  const filteredUsers = users.filter((user) =>
+  const filteredUsers = myFriends.filter((user) =>
     user.fullName.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   useEffect(()=>{
-    console.log(friendList);
-    getUsers();
-  },[getUsers]);
+    getMyFriends();
+  },[getMyFriends]);
 
   return (
     <>

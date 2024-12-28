@@ -118,11 +118,11 @@ export const Unfriend = async(req,res)=>{
     res.status(200).json({ message: "User unfriended successfully." });
 }
 
-export const AllFriends = async(req,res)=>{
+export const MyFriends = async(req,res)=>{
   try {
-    const { ids } = req.body; // Expecting an array of IDs
-    const users = await User.find({ _id: { $in: ids } }).select("-password"); // MongoDB `$in` operator
-    res.json(users);
+    const users = await User.find({ _id: { $in: req.user.friends } }).select("-password");
+    console.log(users);
+    res.status(200).json(users);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch users' });
   }
@@ -137,67 +137,7 @@ export const SearchFriends = async(req, res) => {
       return res.status(404).json({ message: 'User not found.' });
     }
     const friendsList = currentUser.friends;
-    // const friendRequests = await User.find({ _id: { $in: currentUser.friendRequests } }).select("-password");
-    // const users = await User.find({
-    //   $and: [
-    //       {
-    //           $or: [
-    //               { fullName: { $regex: query, $options: 'i' } },
-    //               { email: { $regex: query, $options: 'i' } }
-    //           ]
-    //       },
-    //       // { _id: { $nin: [...friendsList, ...friendRequests] } }, // Exclude users in the friend list
-    //       { _id: { $nin: friendsList } },
-    //       { _id: { $ne: userId } } // Exclude the current user
-    //   ]
-    // }).select('_id fullName email');
-
-    // const [friendRequests, users] = await Promise.all([
-    //   User.find({ _id: { $in: currentUser.friendRequests } }).select("-password"),
-    //   User.find({
-    //     $and: [
-    //       {
-    //         $or: [
-    //           { fullName: { $regex: query, $options: 'i' } },
-    //           { email: { $regex: query, $options: 'i' } }
-    //         ]
-    //       },
-    //       {$addFields: {INVITED}},
-    //       { _id: { $nin: [...friendsList, ...currentUser.friendRequests] } },
-    //       { _id: { $ne: userId } }
-    //     ]
-    //   }).select('_id fullName email')
-    // ]);
-
-    // const results = await User.aggregate([
-    //   {
-    //     $facet: {
-    //       friendRequests: [
-    //         { $match: { _id: { $in: currentUser.friendRequests } } },
-    //         { $project: { password: 0 } } // Exclude the password field
-    //       ],
-    //       users: [
-    //         { 
-    //           $match: {
-    //             $and: [
-    //               {
-    //                 $or: [
-    //                   { fullName: { $regex: query, $options: 'i' } },
-    //                   { email: { $regex: query, $options: 'i' } }
-    //                 ]
-    //               },
-    //               { _id: { $nin: friendsList } },
-    //               { _id: { $ne: userId } }
-    //             ]
-    //           }
-    //         },
-    //         { $project: { _id: 1, fullName: 1, email: 1 } } // Select only specific fields
-    //       ]
-    //     }
-    //   }
-    // ]);
-    // const { friendRequests, users } = results[0];
-
+    
     const users = await User.aggregate([
       {
         $match: {

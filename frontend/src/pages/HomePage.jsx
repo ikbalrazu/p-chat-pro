@@ -13,14 +13,17 @@ import { useUtilityStore } from '../store/useUtilityStore';
 import AddFriend from '../components/findfriend/AddFriend';
 
 const HomePage = () => {
-  const location = useLocation();
   const {selectedUser} = useChatStore();
   const {currentPage} = useUtilityStore();
-  const basePath = location.pathname === '/'
   return (
     <div className="flex h-screen bg-gray-100">
       <Sidebar/>
       <div className="hidden md:block h-screen w-80 bg-white dark:bg-gray-800  border-r border-gray-300 flex flex-col">
+      {currentPage === 'conversation' && <Conversation />}
+      {currentPage === 'profile' && <UserProfile />}
+      {currentPage === 'addfriend' && <AddFriend />}
+      </div>
+      <div className="block md:hidden w-full h-full">
       {currentPage === 'conversation' && <Conversation />}
       {currentPage === 'profile' && <UserProfile />}
       {currentPage === 'addfriend' && <AddFriend />}

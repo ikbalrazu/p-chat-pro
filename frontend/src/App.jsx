@@ -12,14 +12,15 @@ import { Toaster } from "react-hot-toast";
 import Home from './pages/Home';
 import FindFriends from './components/FindFriends';
 import Conversation from './components/conversation/Conversation';
+import { useUserStore } from './store/useUserStore';
 
 const App = () => {
-  const {authUser, checkAuth, isCheckingAuth} = useAuthStore();
+  const {authUser, checkAuth, isCheckingAuth, friendList} = useAuthStore();
+  
 
   useEffect(()=>{
     checkAuth();
     console.log(authUser);
-    
   },[checkAuth]);
 
   if (isCheckingAuth && !authUser){

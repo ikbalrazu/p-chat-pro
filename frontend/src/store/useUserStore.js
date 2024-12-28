@@ -1,18 +1,22 @@
+import toast from "react-hot-toast";
 import { create } from "zustand";
+import { axiosInstance } from "../lib/axios";
 
 export const useUserStore = create((set)=>({
-    friends: [],
+    myFriends: [],
     searchQueryResults: [],
     
-    setFriendsList: async(ids)=>{
-        console.log(ids);
-    },
+    // setFriendsList: async(ids)=>{
+    //     console.log(ids);
+    // },
 
-    setFriendsList: async(ids) => {
+    getMyFriends: async() => {
         try {
-            await axiosInstance.post("/user/all-friends",{ids});
+            const response = await axiosInstance.get("/user/my-friends");
+            set({myFriends: response.data});
+            console.log(response.data);
         } catch (error) {
-            toast.error(error.response.data.message);
+            toast.error(error.message);
         }
     },
 

@@ -43,6 +43,14 @@ const AddFriend = () => {
     debouncedSearch(searchQuery);
   };
 
+  const friendsActionHandler = async(id) => {
+    console.log(id);
+  }
+
+  const invaitedCancelHandler = async(id) => {
+    console.log(id);
+  }
+
   return (
     <>
       <div className="p-4 flex flex-col items-center justify-between">
@@ -89,21 +97,28 @@ const AddFriend = () => {
                   <p className="font-medium text-gray-800 dark:text-white">{user.fullName}</p>
                   <p className="text-xs text-gray-500">{user.email}</p>
                 </div>
-
+              <div className='flex flex-col gap-1 justify-center items-center'>
                 <button
-                  // onClick={() => sendFriendRequest(user._id)}
+                  onClick={() => friendsActionHandler(user._id)}
                   // disabled={requestedFriends.has(user._id)}
                   // className="px-4 py-1 bg-green-500 text-white rounded-md hover:bg-green-600"
                   className={`px-1 py-1 rounded-md text-xs 
                     ${user.invited
-                      ? 'bg-gray-400 text-white cursor-not-allowed'
+                      ? ' text-black cursor-not-allowed'
                       : 'bg-green-500 text-white hover:bg-green-600'
                     }`
                   }
                 >
                   {user.invited ? 'INVITED' : 'INVITE'}
                 </button>
-
+                <button
+                onClick={()=>invaitedCancelHandler(user._id)} 
+                className={`px-1 py-1 rounded-md text-xs 
+                  ${user.invited ? 'bg-gray-400 text-white hover:bg-gray-500':"hidden"}`}
+                >
+                {user.invited ? 'CANCEL' : ''}
+                </button>
+                </div>
               </li>
             ))}
           </ul>
