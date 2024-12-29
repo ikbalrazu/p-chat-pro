@@ -5,8 +5,9 @@ import cookieParser from "cookie-parser";
 import authRoutes from "./routes/auth.route.js";
 import messageRoutes from "./routes/message.route.js";
 import userRoutes from "./routes/user.route.js";
+import { app } from "./utils/socket.js";
  
-const app = express();
+// const app = express();
 
 app.use(express.json({ limit: '2mb' }));
 app.use(urlencoded({

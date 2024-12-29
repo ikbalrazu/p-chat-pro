@@ -1,16 +1,14 @@
-// const app = require('./app');
-// const dotenv = require('dotenv');
-
 import app from './app.js';
 import dotenv from 'dotenv';
 import { dbConnect } from './config/db.connect.js';
+import { server } from './utils/socket.js';
 
 dotenv.config();
 
 const PORT = process.env.PORT || 4000;
 
 
-app.listen(PORT,()=>{
+server.listen(PORT,()=>{
     console.log("server is running on PORT:"+ PORT);
     dbConnect();
 });

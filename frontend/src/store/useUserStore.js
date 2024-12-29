@@ -14,7 +14,6 @@ export const useUserStore = create((set)=>({
         try {
             const response = await axiosInstance.get("/user/my-friends");
             set({myFriends: response.data});
-            console.log(response.data);
         } catch (error) {
             toast.error(error.message);
         }

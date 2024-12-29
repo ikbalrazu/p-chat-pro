@@ -121,7 +121,6 @@ export const Unfriend = async(req,res)=>{
 export const MyFriends = async(req,res)=>{
   try {
     const users = await User.find({ _id: { $in: req.user.friends } }).select("-password");
-    console.log(users);
     res.status(200).json(users);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch users' });
