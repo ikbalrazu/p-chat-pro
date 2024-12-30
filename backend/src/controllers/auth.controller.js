@@ -150,7 +150,6 @@ export const updateProfileInfo = async(req,res)=>{
 export const checkAuth = async(req, res) =>{
     try {
         const user = req.user;
-        // const friends = await User.find({ _id: { $in: req.user.friends } }).select("-password");
         res.status(200).json(user);
     } catch (error) {
         res.status(500).json({message: "Internal server error"});

@@ -19,6 +19,11 @@ const Sidebar = () => {
   const [openSearchUser,setOpenSearchUser] = useState(false)
   const {setUserProfileShow} = useUserStore();
   const navigate = useUtilityStore((state) => state.navigate);
+  const [showOnlineOnly, setShowOnlineOnly] = useState(false);
+
+  // const filteredUsers = showOnlineOnly
+  //   ? users.filter((user) => onlineUsers.includes(user._id))
+  //   : users;
   
   return (
     <div className="

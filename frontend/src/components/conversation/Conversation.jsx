@@ -1,11 +1,12 @@
-import React, {useEffect, useState} from 'react'
+import React, { useEffect, useState } from 'react'
 import { useChatStore } from '../../store/useChatStore';
 import { useAuthStore } from '../../store/useAuthStore';
 import { useUserStore } from '../../store/useUserStore';
 
 const Conversation = () => {
-  const {getUsers, users, selectedUser, setSelectedUser, isUsersLoading} = useChatStore();
-  const {getMyFriends, myFriends} = useUserStore();
+  const { onlineUsers } = useAuthStore();
+  const { getUsers, users, selectedUser, setSelectedUser, isUsersLoading } = useChatStore();
+  const { getMyFriends, myFriends, isFriendsLoading } = useUserStore();
 
   // State for search input
   const [searchTerm, setSearchTerm] = useState("");
@@ -15,83 +16,84 @@ const Conversation = () => {
     user.fullName.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  useEffect(()=>{
+  useEffect(() => {
     getMyFriends();
-  },[getMyFriends]);
+  }, [getMyFriends]);
 
   return (
     <>
-    <div className="p-4 flex flex-col items-center justify-between">
+      <div className="p-4 flex flex-col items-center justify-between">
         <h2 className="text-md font-semibold text-gray-800 dark:text-white mb-1">Conversations</h2>
         <div className="w-full max-w-md">
-        <input
-          type="text"
-          placeholder="Search friends..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full p-3 h-1 text-sm rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring-2"
-        />
+          <input
+            type="text"
+            placeholder="Search friends..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full p-3 h-1 text-sm rounded-md border border-gray-300 shadow-sm focus:outline-none focus:ring-2"
+          />
+        </div>
       </div>
-    </div>
-    
-    <div className="h-[86%] overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200">
-    {filteredUsers.length > 0 ? (
-      <div 
-      className="flex-1"
-      key={filteredUsers._id}
-      >
-        {filteredUsers.map((user)=>(
-          <button 
-          key={user._id}
-          onClick={()=>setSelectedUser(user)}
-          className="
+
+      <div className="h-[86%] overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200">
+
+        {isFriendsLoading ? (
+          <div className="space-y-4">
+            {[...Array(5)].map((_, index) => (
+              <div
+                key={index}
+                className="flex items-center p-4 space-x-3 animate-pulse"
+              >
+                <div className="w-10 h-10 bg-gray-300 rounded-full" />
+                <div className="flex-1 space-y-2">
+                  <div className="h-4 bg-gray-300 rounded w-3/4" />
+                  <div className="h-3 bg-gray-300 rounded w-1/2" />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : filteredUsers.length > 0 ? (
+          <div
+            className="flex-1"
+            key={filteredUsers._id}
+          >
+            {filteredUsers.map((user) => (
+              <button
+                key={user._id}
+                onClick={() => setSelectedUser(user)}
+                className="
             w-full p-4 flex items-center hover:bg-gray-200 cursor-pointer
             "
-            // ${selectedUser?._id === user._id ? "bg-base-300 ring-1 ring-base-300" : ""}
-          
-          >
-          <div 
-          // className="w-10 h-10 bg-purple-500 text-white rounded-full flex items-center justify-center"
-          className="w-10 h-10 bg-purple-500 text-white rounded-full flex items-center justify-center"
-          >
-          <img
-            src={user.profilePic || "https://randomuser.me/api/portraits/men/1.jpg"}
-            width="40"
-            height="40"
-            alt={user?.fullName}
-            className='overflow-hidden rounded-full'
-          />
+              // ${selectedUser?._id === user._id ? "bg-base-300 ring-1 ring-base-300" : ""}
+
+              >
+                <div
+                  className='relative w-10 h-10'
+                >
+                  <img
+                    src={user.profilePic || "https://randomuser.me/api/portraits/men/1.jpg"}
+                    width="40"
+                    height="40"
+                    alt={user?.fullName}
+                    className='overflow-hidden rounded-full'
+                  />
+                  {onlineUsers.includes(user._id) && (
+                    <span className='absolute bottom-0 right-0 size-2 bg-green-500 rounded-full ring-2 ring-zinc-200' />
+                  )}
+                </div>
+                <div className="ml-3">
+                  <p className="font-medium text-gray-800 dark:text-white">{user.fullName}</p>
+                  <p className="text-sm text-gray-500">Start the conversation!</p>
+                </div>
+              </button>
+            ))}
           </div>
-          <div className="ml-3">
-          <p className="font-medium text-gray-800 dark:text-white">{user.fullName}</p>
-          <p className="text-sm text-gray-500">Start the conversation!</p>
-          </div>
-          </button>
-          // <li 
-          // className="p-4 flex items-center hover:bg-gray-200 cursor-pointer"
-          // >
-          // <div className="w-10 h-10 bg-purple-500 text-white rounded-full flex items-center justify-center">
-          // <img
-          //     src="https://randomuser.me/api/portraits/men/1.jpg"
-          //     width="40"
-          //     height="40"
-          //     alt="iqbal"
-          //     className='overflow-hidden rounded-full'
-          // />
-          // </div>
-          // <div className="ml-3">
-          //   <p className="font-medium text-gray-800 dark:text-white">{user.name}</p>
-          //   <p className="text-sm text-gray-500">Start the conversation!</p>
-          // </div>
-          // </li>
-        ))}
+        ) : (
+          <p className="text-gray-500 text-center">No friends found.</p>
+        )}
       </div>
-    ): (
-      <p className="text-gray-500 text-center">No friends found.</p>
-    )}
-    </div>
-    <div>
-    </div>
+      <div>
+      </div>
     </>
   )
 }

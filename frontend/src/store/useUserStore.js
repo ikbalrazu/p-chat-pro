@@ -5,17 +5,21 @@ import { axiosInstance } from "../lib/axios";
 export const useUserStore = create((set)=>({
     myFriends: [],
     searchQueryResults: [],
+    isFriendsLoading: false,
     
     // setFriendsList: async(ids)=>{
     //     console.log(ids);
     // },
 
     getMyFriends: async() => {
+        set({ isUsersLoading: true });
         try {
             const response = await axiosInstance.get("/user/my-friends");
             set({myFriends: response.data});
         } catch (error) {
             toast.error(error.message);
+        }finally{
+            set({ isUsersLoading: false });
         }
     },
 

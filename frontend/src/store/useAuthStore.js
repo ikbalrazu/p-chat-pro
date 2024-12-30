@@ -22,13 +22,20 @@ export const useAuthStore = create((set, get) => ({
     checkAuth: async()=>{
         try {
             const res = await axiosInstance.get("/auth/check");
+            console.log(res);
             set({authUser: res?.data});
             set({friendList: res?.data?.friends});
             set({friendRequestList: res?.data?.friendRequests});
-            get().connectSocket();
+            // get().connectSocket();
+            if(res.data){
+                setTimeout(() => {
+                    get().connectSocket();
+                }, 100);
+            }
         } catch (error) {
-            // console.log("Error in checkAuth:", error.message);
+            console.log("Error in checkAuth:", error);
             set({ authUser: null });
+            // toast.error(error.message);
         }finally{
             set({isCheckingAuth: false});
         }
@@ -52,12 +59,14 @@ export const useAuthStore = create((set, get) => ({
         set({ isLoggingIn: true });
         try {
             const res = await axiosInstance.post("/auth/login", data);
+            console.log(res);
             set({ authUser: res.data });
             toast.success("Login Successful!");
             get().connectSocket()
         } catch (error) {
-            toast.dismiss();
-            // toast.error(error?.response?.data?.message)
+            // toast.dismiss();
+            console.log(error);
+            toast.error(error?.response?.data?.message)
         }finally{
             set({ isLoggingIn: false });
         }
@@ -111,14 +120,22 @@ export const useAuthStore = create((set, get) => ({
     connectSocket: () => {
         const {authUser,socket} = get();
         if(!authUser || (socket && socket.connected)) return;
-
-        const socketInstance  = io("http://localhost:5000",{ withCredentials: true });
+        const socketInstance  = io(
+            "http://localhost:5000",
+            // { withCredentials: true },
+            {query: {userId: authUser._id}}
+        );
         socketInstance.connect();
         // socketInstance.on("connect", () => {
         //     console.log("Socket connected:", socketInstance.id);
         // });
         console.log(socket);
         set({ socket: socketInstance });
+
+        socketInstance.on("getOnlineUsers", (userIds)=>{
+            console.log(userIds);
+            set({onlineUsers: userIds});
+        })
     },
 
     disconnectSocket: () => {
