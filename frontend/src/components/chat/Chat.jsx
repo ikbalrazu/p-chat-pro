@@ -1,57 +1,70 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { IoIosArrowBack } from "react-icons/io";
 import { Link, NavLink } from 'react-router-dom';
 import { useChatStore } from '../../store/useChatStore';
 import MessageInput from './MessageInput';
 import { useUtilityStore } from '../../store/useUtilityStore';
+import { useAuthStore } from '../../store/useAuthStore';
+import ChatHeader from './ChatHeader';
+import { formatMessageTime } from '../../lib/utils';
 
 const Chat = () => {
-  const {selectedUser} = useChatStore();
+  const { selectedUser, getMessages, SubscribeToMessages, messages } = useChatStore();
+  const { onlineUsers, authUser } = useAuthStore();
   const navigate = useUtilityStore((state) => state.navigate);
   // console.log(selectedUser);
+
+  useEffect(() => {
+    getMessages(selectedUser._id);
+    SubscribeToMessages();
+  }, []);
   return (
     <div className="flex-1 flex flex-col">
-        {/* Chat Window */}
-        {/* Header */}
-        <div className="p-2 bg-white border-b border-gray-300 flex items-center justify-between">
-          <div className="flex items-center">
-            <NavLink 
-            onClick={() => navigate('profile')}
-            className='md:hidden lg:hidden xl:hidden 2xl:hidden p-2 mr-1 hover:bg-slate-100'
-            >
-            <IoIosArrowBack size={20}/>
-            </NavLink>
+      {/* Chat Window */}
+      {/* Header */}
+      <ChatHeader />
 
-            <div className="w-10 h-10 bg-purple-500 text-white rounded-full flex items-center justify-center">
-            <img
-            src={selectedUser.profilePic || "https://randomuser.me/api/portraits/men/1.jpg"}
-            width="40"
-            height="40"
-            alt={selectedUser?.fullName}
-            className='overflow-hidden rounded-full'
-            />
+      {/* Chat Messages */}
+      <div className="flex-1 p-4 overflow-y-auto">
+        {/* Add messages dynamically */}
+        {messages.map((message) => (
+          <div
+            key={message._id}
+            className={`flex ${message.senderId === authUser._id ? "justify-end" : "justify-start"}`}
+          >
+            <div className='flex items-start'>
+            <div className="size-10 rounded-full border">
+              <img
+                src={
+                  message.senderId === authUser._id
+                    ? authUser.profilePic || "/avatar.png"
+                    : selectedUser.profilePic || "/avatar.png"
+                }
+                alt="profile pic"
+              />
             </div>
-            <div className="ml-3">
-              <p className="font-medium text-gray-800">{selectedUser.fullName}</p>
             </div>
-          </div>
-          <div className="flex space-x-2">
-            <button className="p-2 hover:bg-gray-200 rounded-full">
-              📞
-            </button>
-            <button className="p-2 hover:bg-gray-200 rounded-full">
-              🎥
-            </button>
-            <button className="p-2 hover:bg-gray-200 rounded-full">
-              ⚙️
-            </button>
-          </div>
-        </div>
 
-        {/* Chat Messages */}
-        <div className="flex-1 p-4 overflow-y-auto">
-          {/* Add messages dynamically */}
-          <div className="flex items-start">
+            <div className="chat-header mb-1">
+              <time className="text-xs opacity-50 ml-1">
+                {formatMessageTime(message.createdAt)}
+              </time>
+            </div>
+            
+            <div className="chat-bubble flex flex-col">
+              {message.image && (
+                <img
+                  src={message.image}
+                  alt="Attachment"
+                  className="sm:max-w-[200px] rounded-md mb-2"
+                />
+              )}
+              {message.text && <p>{message.text}</p>}
+            </div>
+            
+          </div>
+        ))}
+        {/* <div className="flex items-start">
           <div className="w-10 h-10 bg-purple-500 text-white rounded-full flex items-center justify-center">
           j
           </div>
@@ -63,13 +76,13 @@ const Chat = () => {
           <div className="mr-3 mt-2 p-3 bg-blue-500 text-white rounded-lg">
             <p className="text-sm">I'm doing well, thank you! 😊</p>
           </div>
-        </div> 
-        </div>
-
-        {/* Message Input */}
-        <MessageInput/>
-
+        </div>  */}
       </div>
+
+      {/* Message Input */}
+      <MessageInput />
+
+    </div>
   )
 }
 
