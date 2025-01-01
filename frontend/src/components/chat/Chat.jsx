@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { IoIosArrowBack } from "react-icons/io";
 import { Link, NavLink } from 'react-router-dom';
 import { useChatStore } from '../../store/useChatStore';
@@ -7,17 +7,30 @@ import { useUtilityStore } from '../../store/useUtilityStore';
 import { useAuthStore } from '../../store/useAuthStore';
 import ChatHeader from './ChatHeader';
 import { formatMessageTime } from '../../lib/utils';
+import TimeAgo from 'javascript-time-ago';
+import en from "javascript-time-ago/locale/en.json";
 
 const Chat = () => {
-  const { selectedUser, getMessages, SubscribeToMessages, messages } = useChatStore();
+  const { selectedUser, getMessages, SubscribeToMessages, messages, unsubscribeFromMessages } = useChatStore();
   const { onlineUsers, authUser } = useAuthStore();
   const navigate = useUtilityStore((state) => state.navigate);
-  // console.log(selectedUser);
+  const messageEndRef = useRef(null);
+  TimeAgo.addDefaultLocale(en);
+  const timeAgo = new TimeAgo('en-US')
+
+  console.log(messages);
 
   useEffect(() => {
     getMessages(selectedUser._id);
     SubscribeToMessages();
-  }, []);
+    return () => unsubscribeFromMessages();
+  }, [getMessages,selectedUser._id,SubscribeToMessages, unsubscribeFromMessages]);
+
+  useEffect(()=>{
+    if(messageEndRef.current && messages){
+      messageEndRef.current.scrollIntoView({behavior: "smooth"});
+    }
+  },[messages]);
   return (
     <div className="flex-1 flex flex-col">
       {/* Chat Window */}
@@ -31,10 +44,57 @@ const Chat = () => {
           <div
             key={message._id}
             className={`flex ${message.senderId === authUser._id ? "justify-end" : "justify-start"}`}
+            ref = {messageEndRef}
           >
-            <div className='flex items-start'>
-            <div className="size-10 rounded-full border">
+            {/* profile picture */}
+            {message.senderId !== authUser._id && (
+              <div className="w-10 h-10 flex-shrink-0 mr-2">
+                <img
+                  src={selectedUser.profilePic || "/avatar.png"}
+                  alt="profile"
+                  className="w-full h-full rounded-full object-cover"
+                />
+              </div>
+            )}
+
+            {/* chat bubble */}
+            <div
+              className={`max-w-[80%] flex flex-col mb-4 ${
+                message.senderId === authUser._id ? "items-end" : "items-start"
+              }`}
+            >
+              {message.image && (
+                <img
+                  src={message.image}
+                  alt="Attachment"
+                  className="max-w-full rounded-md mb-0.5"
+                />
+              )}
+              {message.text && (
+                <p
+                  className={`px-4 py-2 rounded-lg text-sm ${
+                    message.senderId === authUser._id
+                      ? "bg-blue-500 text-white"
+                      : "bg-gray-200 text-gray-800"
+                  }`}
+                >
+                  {message.text}
+                </p>
+              )}
+
+              <time
+                className={`text-xs mt-1 ${
+                  message.senderId === authUser._id ? "text-gray-400" : "text-gray-500"
+                }`}
+              >
+                {timeAgo.format(new Date(message.createdAt), "twitter")}
+              </time>
+            </div>
+
+            {/* <div className='flex items-start'>
+            <div className="size-8 rounded-full border">
               <img
+                className='rounded-full'
                 src={
                   message.senderId === authUser._id
                     ? authUser.profilePic || "/avatar.png"
@@ -43,15 +103,11 @@ const Chat = () => {
                 alt="profile pic"
               />
             </div>
-            </div>
+            </div> */}
 
-            <div className="chat-header mb-1">
-              <time className="text-xs opacity-50 ml-1">
-                {formatMessageTime(message.createdAt)}
-              </time>
-            </div>
             
-            <div className="chat-bubble flex flex-col">
+            
+            {/* <div className="chat-bubble flex flex-col">
               {message.image && (
                 <img
                   src={message.image}
@@ -60,7 +116,13 @@ const Chat = () => {
                 />
               )}
               {message.text && <p>{message.text}</p>}
-            </div>
+            </div> */}
+
+            {/* <div className="chat-header mb-1">
+              <time className="text-xs opacity-50 ml-1">
+                {timeAgo.format(new Date(message.createdAt),"twitter")}
+              </time>
+            </div> */}
             
           </div>
         ))}
