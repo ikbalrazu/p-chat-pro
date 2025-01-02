@@ -10,6 +10,13 @@ import { formatMessageTime } from '../../lib/utils';
 import TimeAgo from 'javascript-time-ago';
 import en from "javascript-time-ago/locale/en.json";
 
+const makeTextClickable = (text) => {
+  const urlRegex = /(\bhttps?:\/\/[^\s]+)/gi;
+  return text.replace(urlRegex, (url) => {
+    return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-[#171563] hover:underline">${url}</a>`;
+  });
+};
+
 const Chat = () => {
   const { selectedUser, getMessages, SubscribeToMessages, messages, unsubscribeFromMessages } = useChatStore();
   const { onlineUsers, authUser } = useAuthStore();
@@ -72,13 +79,21 @@ const Chat = () => {
               )}
               {message.text && (
                 <p
-                  className={`px-4 py-2 rounded-lg text-sm ${
+                  className={`max-w-md md:max-w-2xl px-4 py-2 rounded-lg text-sm break-words ${
                     message.senderId === authUser._id
-                      ? "bg-blue-500 text-white"
+                      ? "bg-blue-600 text-white"
                       : "bg-gray-200 text-gray-800"
                   }`}
+                  style={{
+                    wordWrap: "break-word",
+                    overflowWrap: "break-word",
+                    whiteSpace: "pre-wrap",
+                  }}
+                  dangerouslySetInnerHTML={{
+                    __html: makeTextClickable(message.text),
+                  }}
                 >
-                  {message.text}
+                  {/* {message.text} */}
                 </p>
               )}
 
