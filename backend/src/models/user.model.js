@@ -32,6 +32,17 @@ const userSchema = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: "User"
         }],
+        notifications: [
+            {
+              type: { type: String },
+              message: String,
+              createdAt: { type: Date, default: Date.now },
+            },
+        ],
+        sendRequests: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User"
+        }],
         bio:{
             type: String,
             maxlength:100

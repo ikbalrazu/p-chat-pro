@@ -23,6 +23,16 @@ export const useUserStore = create((set)=>({
         }
     },
 
+    friendRequest: async(receiverId)=>{
+        try {
+            console.log(receiverId);
+            const response = await axiosInstance.post("/user/friend-request",{receiverId});
+            console.log(response);
+        } catch (error) {
+            toast.error(error.message);
+        }
+    },
+
     searchFriends: async(query)=>{
         try {
             console.log(query);

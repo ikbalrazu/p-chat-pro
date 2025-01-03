@@ -18,6 +18,7 @@ export const useAuthStore = create((set, get) => ({
 
     socket: null,
     onlineUsers: [],
+    notifications: [],
 
     checkAuth: async()=>{
         try {
@@ -135,7 +136,12 @@ export const useAuthStore = create((set, get) => ({
         socketInstance.on("getOnlineUsers", (userIds)=>{
             console.log(userIds);
             set({onlineUsers: userIds});
-        })
+        });
+
+        // Listen for notifications
+        socketInstance.on("notification", (notification) => {
+            set((prev) => [...prev, notification]);
+        });
     },
 
     disconnectSocket: () => {

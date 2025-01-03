@@ -2,13 +2,17 @@ import React, { useState } from 'react'
 import { axiosInstance } from '../../lib/axios';
 import debounce from 'lodash.debounce';
 import { useAuthStore } from '../../store/useAuthStore';
+import { useUserStore } from '../../store/useUserStore';
 
 const AddFriend = () => {
-  const { friendRequestList } = useAuthStore();
+  const { friendRequestList, authUser } = useAuthStore();
+  const {friendRequest} = useUserStore();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
+
+  const [activeComponent, setActiveComponent] = useState(null);
 
   const searchFriendsHandler = async (searchQuery) => {
     if (!searchQuery.trim()) {
@@ -45,11 +49,25 @@ const AddFriend = () => {
 
   const friendsActionHandler = async(id) => {
     console.log(id);
+    await friendRequest(id);
   }
 
   const invaitedCancelHandler = async(id) => {
     console.log(id);
   }
+
+  const renderActiveComponent = () => {
+    switch (activeComponent) {
+      case "Add":
+        return <div>Add Friend Component</div>;
+      case "Request":
+        return <div>Request Component</div>;
+      case "SendRequest":
+        return <div>Send Request Component</div>;
+      default:
+        return null;
+    }
+  };
 
   return (
     <>
@@ -65,10 +83,35 @@ const AddFriend = () => {
             className='w-full p-3 h-1 text-sm border rounded-md border-gray-300 shadow-sm focus:outline-none focus:ring-2'
           />
         </div>
+
+        {/* <div className='flex justify-between gap-5'>
+          <button
+          className={`px-4 py-2 rounded-md ${
+            activeComponent === "Add" ? "bg-blue-700 text-white" : "bg-blue-500 text-white"
+          }`}
+          onClick={() => setActiveComponent("Add")}
+          >Add
+          </button>
+          <button
+          className={`px-4 py-2 rounded-md ${
+            activeComponent === "Request" ? "bg-green-700 text-white" : "bg-green-500 text-white"
+          }`}
+          onClick={() => setActiveComponent("Request")}
+          >Request</button>
+          <button
+          className={`px-4 py-2 rounded-md ${
+            activeComponent === "SendRequest" ? "bg-purple-700 text-white" : "bg-purple-500 text-white"
+          }`}
+          onClick={() => setActiveComponent("SendRequest")}
+          >Send Request</button>
+        </div> */}
+        {/* Render the active component */}
+      {/* <div className="mt-6 w-full">{renderActiveComponent()}</div> */}
+
       </div>
 
       <div
-        className="h-[86%] overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200"
+        className="h-[80%] overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200"
       >
         {loading ? (
           <p className="text-center text-sm text-gray-500">Loading...</p>

@@ -18,6 +18,13 @@ export function getReceiverSocketId(userId){
     return userSocketMap[userId];
 }
 
+export const sendNotification = (userId, notification) => {
+    const socketId = userSocketMap[userId];
+    if (socketId) {
+      io.to(socketId).emit("notification", notification);
+    }
+};
+
 const userSocketMap = {}; //{userId: socketId}
 
 io.on("connection",(socket)=>{

@@ -1,11 +1,20 @@
 import User from "../models/user.model.js";
+import { sendNotification } from "../utils/socket.js";
 
 export const FriendRequest = async(req,res) => {
     const {receiverId} = req.body;
     const senderId = req.user._id;
+    console.log(receiverId);
+
+    // Notify receiver in real time
+  sendNotification(receiverId, {
+    type: "friend-request",
+    message: `${senderId} sent you a friend request.`,
+  });
 
     const sender = await User.findById(senderId);
     const receiver = await User.findById(receiverId);
+    console.log(receiver);
 
     if (!receiverId) {
         return res.status(400).json({ message: "Both sender and receiver IDs are required." });
@@ -31,6 +40,12 @@ export const FriendRequest = async(req,res) => {
 
 export const AcceptRequest = async(req,res) => {
     const { userId, requestId } = req.body;
+
+  // Notify sender in real time
+  sendNotification(senderId, {
+    type: "friend-request-accepted",
+    message: `${requestId} accepted your friend request.`,
+  });
 
     // Validate input
     if (!userId || !requestId) {
