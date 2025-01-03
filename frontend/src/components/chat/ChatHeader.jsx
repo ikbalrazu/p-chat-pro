@@ -3,6 +3,7 @@ import { NavLink } from 'react-router-dom'
 import { IoIosArrowBack } from "react-icons/io";
 import { useChatStore } from '../../store/useChatStore';
 import { useAuthStore } from '../../store/useAuthStore';
+import Avatar from '../Avatar';
 
 const ChatHeader = () => {
     const {selectedUser} = useChatStore();
@@ -18,13 +19,20 @@ const ChatHeader = () => {
                     <IoIosArrowBack size={20} />
                 </NavLink>
 
-                <div className="w-10 h-10 bg-purple-500 text-white rounded-full flex items-center justify-center">
-                    <img
+                <div className="w-10 h-10 text-white rounded-full flex items-center justify-center border">
+                    {/* <img
                         src={selectedUser.profilePic || "https://randomuser.me/api/portraits/men/1.jpg"}
                         width="40"
                         height="40"
                         alt={selectedUser?.fullName}
                         className='overflow-hidden rounded-full'
+                    /> */}
+                    <Avatar
+                    width={40}
+                    height={40}
+                    name={selectedUser?.fullName}
+                    imageUrl={selectedUser?.profilePic}
+                    userId={selectedUser?._id}
                     />
                 </div>
                 <div className="ml-3 flex flex-col">

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useChatStore } from '../../store/useChatStore';
 import { useAuthStore } from '../../store/useAuthStore';
 import { useUserStore } from '../../store/useUserStore';
+import Avatar from '../Avatar';
 
 const Conversation = () => {
   const { onlineUsers } = useAuthStore();
@@ -15,7 +16,7 @@ const Conversation = () => {
   const filteredUsers = myFriends.filter((user) =>
     user.fullName.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
+  
   useEffect(() => {
     getMyFriends();
   }, [getMyFriends]);
@@ -70,13 +71,22 @@ const Conversation = () => {
                 <div
                   className='relative w-10 h-10'
                 >
-                  <img
+                  {/* <img
                     src={user.profilePic || "https://randomuser.me/api/portraits/men/1.jpg"}
                     width="40"
                     height="40"
                     alt={user?.fullName}
                     className='overflow-hidden rounded-full'
+                  /> */}
+                  <div className='border rounded-full'>
+                  <Avatar
+                    width={40}
+                    height={40}
+                    name={user?.fullName}
+                    imageUrl={user?.profilePic}
+                    userId={user?._id}
                   />
+                  </div>
                   {onlineUsers.includes(user._id) && (
                     <span className='absolute bottom-0 right-0 size-2 bg-green-500 rounded-full ring-2 ring-zinc-200' />
                   )}

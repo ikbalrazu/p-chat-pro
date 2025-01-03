@@ -69,7 +69,7 @@ const Sidebar = () => {
 
         <div className="mt-auto mb-4">
           <NavLink 
-          className={({isActive})=>`w-10 h-10 bg-purple-500 text-white rounded-full flex items-center justify-center`} 
+          className={({isActive})=>`w-10 h-10 border text-white rounded-full flex items-center justify-center`} 
           onClick={()=>navigate("profile")}
           >
                 <Avatar

@@ -9,6 +9,7 @@ import ChatHeader from './ChatHeader';
 import { formatMessageTime } from '../../lib/utils';
 import TimeAgo from 'javascript-time-ago';
 import en from "javascript-time-ago/locale/en.json";
+import Avatar from '../Avatar';
 
 const makeTextClickable = (text) => {
   const urlRegex = /(\bhttps?:\/\/[^\s]+)/gi;
@@ -31,13 +32,13 @@ const Chat = () => {
     getMessages(selectedUser._id);
     SubscribeToMessages();
     return () => unsubscribeFromMessages();
-  }, [getMessages,selectedUser._id,SubscribeToMessages, unsubscribeFromMessages]);
+  }, [getMessages, selectedUser._id, SubscribeToMessages, unsubscribeFromMessages]);
 
-  useEffect(()=>{
-    if(messageEndRef.current && messages){
-      messageEndRef.current.scrollIntoView({behavior: "smooth"});
+  useEffect(() => {
+    if (messageEndRef.current && messages) {
+      messageEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
-  },[messages]);
+  }, [messages]);
   return (
     <div className="flex-1 flex flex-col">
       {/* Chat Window */}
@@ -51,24 +52,31 @@ const Chat = () => {
           <div
             key={message._id}
             className={`flex ${message.senderId === authUser._id ? "justify-end" : "justify-start"}`}
-            ref = {messageEndRef}
+            ref={messageEndRef}
           >
             {/* profile picture */}
             {message.senderId !== authUser._id && (
-              <div className="w-10 h-10 flex-shrink-0 mr-2">
-                <img
+              <div className="w-8 h-8 flex-shrink-0 mr-2 border rounded-full">
+                {/* <img
                   src={selectedUser.profilePic || "/avatar.png"}
                   alt="profile"
                   className="w-full h-full rounded-full object-cover"
+                /> */}
+                <Avatar
+                  width={32}
+                  height={32}
+                  fontSize={15}
+                  name={selectedUser?.fullName}
+                  imageUrl={selectedUser?.profilePic}
+                  userId={authUser?._id}
                 />
               </div>
             )}
 
             {/* chat bubble */}
             <div
-              className={`max-w-[80%] flex flex-col mb-4 ${
-                message.senderId === authUser._id ? "items-end" : "items-start"
-              }`}
+              className={`max-w-[80%] flex flex-col mb-4 ${message.senderId === authUser._id ? "items-end" : "items-start"
+                }`}
             >
               {message.image && (
                 <img
@@ -79,11 +87,10 @@ const Chat = () => {
               )}
               {message.text && (
                 <p
-                  className={`max-w-md md:max-w-2xl px-4 py-2 rounded-lg text-sm break-words ${
-                    message.senderId === authUser._id
+                  className={`max-w-md md:max-w-2xl px-4 py-2 rounded-lg text-sm break-words ${message.senderId === authUser._id
                       ? "bg-blue-600 text-white"
                       : "bg-gray-200 text-gray-800"
-                  }`}
+                    }`}
                   style={{
                     wordWrap: "break-word",
                     overflowWrap: "break-word",
@@ -98,9 +105,8 @@ const Chat = () => {
               )}
 
               <time
-                className={`text-xs mt-1 ${
-                  message.senderId === authUser._id ? "text-gray-400" : "text-gray-500"
-                }`}
+                className={`text-xs mt-1 ${message.senderId === authUser._id ? "text-gray-400" : "text-gray-500"
+                  }`}
               >
                 {timeAgo.format(new Date(message.createdAt), "twitter")}
               </time>
@@ -120,8 +126,8 @@ const Chat = () => {
             </div>
             </div> */}
 
-            
-            
+
+
             {/* <div className="chat-bubble flex flex-col">
               {message.image && (
                 <img
@@ -138,7 +144,7 @@ const Chat = () => {
                 {timeAgo.format(new Date(message.createdAt),"twitter")}
               </time>
             </div> */}
-            
+
           </div>
         ))}
         {/* <div className="flex items-start">
