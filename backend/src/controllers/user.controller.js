@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import User from "../models/user.model.js";
 import { sendNotification } from "../utils/socket.js";
 
@@ -6,36 +7,76 @@ export const FriendRequest = async(req,res) => {
     const senderId = req.user._id;
     console.log(receiverId);
 
-    // Notify receiver in real time
-  sendNotification(receiverId, {
-    type: "friend-request",
-    message: `${senderId} sent you a friend request.`,
-  });
+    
 
-    const sender = await User.findById(senderId);
-    const receiver = await User.findById(receiverId);
-    console.log(receiver);
+    // const sender = await User.findById(senderId);
+    // const receiver = await User.findById(receiverId);
+    // console.log(receiver);
 
-    if (!receiverId) {
+    if (!receiverId || !mongoose.Types.ObjectId.isValid(receiverId)) {
         return res.status(400).json({ message: "Both sender and receiver IDs are required." });
     }
 
-    if (!sender || !receiver) {
+    try {
+      const [sender, receiver] = await Promise.all([
+        User.findById(senderId),
+        User.findById(receiverId),
+      ]);
+
+      if (!sender || !receiver) {
         return res.status(404).json({ message: "Sender or receiver not found." });
-    }
-  
-    if (receiver.friendRequests.includes(senderId)) {
+      }
+
+      if (receiver.friendRequests.includes(senderId)) {
         return res.status(400).json({ message: "Friend request already sent." });
-    }
-  
-    if (receiver.friends.includes(senderId)) {
+      }
+
+      if (receiver.friends.includes(senderId)) {
         return res.status(400).json({ message: "You are already friends." });
+      }
+
+      // Update friend requests using a transaction
+      const session = await mongoose.startSession();
+      session.startTransaction();
+
+      try {
+        receiver.friendRequests.push(senderId);
+        sender.sendRequests.push(receiverId);
+
+        await receiver.save({ session });
+        await sender.save({ session });
+
+        await session.commitTransaction();
+        session.endSession();
+
+        // Notify receiver in real time
+        sendNotification(receiverId, {
+          type: "friend-request",
+          message: `${senderId} sent you a friend request.`,
+        });
+
+        return res.status(200).json({ message: "Friend request sent successfully." });
+
+      } catch (error) {
+        await session.abortTransaction();
+        session.endSession();
+        throw transactionError;
+      }
+
+    } catch (error) {
+      return res.status(500).json({ message: "An error occurred. Please try again later." });
     }
+
+    // receiver.friendRequests.push(senderId);
+    // sender.sendRequests.push(receiverId);
+    // await receiver.save();
+    // await sender.save();
   
-    receiver.friendRequests.push(senderId);
-    await receiver.save();
-  
-    res.status(200).json({ message: "Friend request sent successfully." });
+    // res.status(200).json({ message: "Friend request sent successfully." });
+}
+
+export const SendRequest = async(req,res)=>{
+  const {receiverId} = req.body;
 }
 
 export const AcceptRequest = async(req,res) => {
@@ -146,7 +187,7 @@ export const SearchFriends = async(req, res) => {
   const {query} = req.query || "";
   const userId = req.user._id;
   try {
-    const currentUser = await User.findById(userId).select('friends friendRequests');
+    const currentUser = await User.findById(userId).select('friends friendRequests sendRequests');
     if (!currentUser) {
       return res.status(404).json({ message: 'User not found.' });
     }
@@ -170,9 +211,16 @@ export const SearchFriends = async(req, res) => {
       },
       {
         $addFields: {
-          invited: {
+          friendRequests: {
             $cond: [
               { $in: ["$_id", currentUser.friendRequests] }, // Check if the user is in the `friendRequests` list
+              true,
+              false            
+            ]
+          },
+          sendRequests: {
+            $cond: [
+              { $in: ["$_id", currentUser.sendRequests] }, // Check if the user is in the `friendRequests` list
               true,
               false            
             ]
@@ -184,12 +232,12 @@ export const SearchFriends = async(req, res) => {
           _id: 1,
           fullName: 1,
           email: 1,
-          invited: 1,
+          friendRequests: 1,
+          sendRequests: 1,
           profilePic: 1
         }
       }
     ]);
-
     res.status(200).json({users});
   } catch (error) {
     res.status(500).json({ error: 'An error occurred while searching for users.' });

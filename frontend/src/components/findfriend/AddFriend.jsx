@@ -25,6 +25,7 @@ const AddFriend = () => {
     setMessage('');
     try {
       const response = await axiosInstance.get(`/user/search-friends?query=${searchQuery}`);
+      console.log(response);
       if (response.data.users.length === 0) {
         setMessage('No users found.');
       } else {
@@ -73,6 +74,7 @@ const AddFriend = () => {
     <>
       <div className="p-4 flex flex-col items-center justify-between">
         <h2 className="text-md font-semibold text-gray-800 dark:text-white mb-1">Add Friend</h2>
+        <button onClick={()=>console.log(results)}>check</button>
         <div
           className="flex rounded-md items-center max-w-md w-full">
           <input
@@ -141,26 +143,51 @@ const AddFriend = () => {
                   <p className="text-xs text-gray-500">{user.email}</p>
                 </div>
               <div className='flex flex-col gap-1 justify-center items-center'>
-                <button
-                  onClick={() => friendsActionHandler(user._id)}
-                  // disabled={requestedFriends.has(user._id)}
-                  // className="px-4 py-1 bg-green-500 text-white rounded-md hover:bg-green-600"
-                  className={`px-1 py-1 rounded-md text-xs 
-                    ${user.invited
-                      ? ' text-black cursor-not-allowed'
-                      : 'bg-green-500 text-white hover:bg-green-600'
-                    }`
-                  }
-                >
-                  {user.invited ? 'INVITED' : 'INVITE'}
-                </button>
-                <button
-                onClick={()=>invaitedCancelHandler(user._id)} 
-                className={`px-1 py-1 rounded-md text-xs 
-                  ${user.invited ? 'bg-gray-400 text-white hover:bg-gray-500':"hidden"}`}
-                >
-                {user.invited ? 'CANCEL' : ''}
-                </button>
+
+              {/* Invite or Pending Button */}
+        {user.sendRequests && !user.friendRequests && (
+          <>
+          <button
+            className="px-4 py-1 rounded-md bg-gray-300 text-black text-xs cursor-not-allowed"
+            disabled
+          >
+            Pending
+          </button>
+          <button
+            onClick={() => invaitedCancelHandler(user._id)}
+            className="px-4 py-1 rounded-md bg-gray-400 text-white text-xs hover:bg-gray-500 transition-all"
+          >
+            Cancel 
+          </button>
+          </> 
+        )}
+
+        {/* Accept/Decline Buttons */}
+        {user.friendRequests && (
+          <div className="flex gap-2">
+            <button
+              onClick={() => acceptRequestHandler(user._id)}
+              className="px-4 py-1 bg-blue-500 text-white rounded-md text-xs hover:bg-blue-600 transition-all"
+            >
+              Accept
+            </button>
+            <button
+              onClick={() => declineRequestHandler(user._id)}
+              className="px-4 py-1 bg-red-500 text-white rounded-md text-xs hover:bg-red-600 transition-all"
+            >
+              Decline
+            </button>
+          </div>
+        )}
+        {!user.sendRequests && !user.friendRequests && (
+          <button
+            onClick={() => friendsActionHandler(user._id)}
+            className="px-4 py-1 rounded-md bg-green-500 text-white text-xs hover:bg-green-600 transition-all"
+          >
+            Invite
+          </button>
+        )}
+
                 </div>
               </li>
             ))}
