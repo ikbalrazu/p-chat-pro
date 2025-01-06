@@ -6,7 +6,7 @@ import { useUserStore } from '../../store/useUserStore';
 
 const AddFriend = () => {
   const { friendRequestList, authUser } = useAuthStore();
-  const {friendRequest} = useUserStore();
+  const { friendRequest } = useUserStore();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -48,13 +48,29 @@ const AddFriend = () => {
     debouncedSearch(searchQuery);
   };
 
-  const friendsActionHandler = async(id) => {
+  const friendsActionHandler = async (id) => {
     console.log(id);
-    await friendRequest(id);
+    const res = await axiosInstance.post(`/user/friend-request`, { receiverId: id });
+    console.log(res);
+    if(res.status === 200){
+      setResults((prevResults)=>
+        prevResults.map((user)=> user._id === id ? {...user, sendRequests:true} : user )
+      )
+    }
+    
   }
 
-  const invaitedCancelHandler = async(id) => {
+  const invaitedCancelHandler = async (id) => {
     console.log(id);
+    try {
+      const res = await axiosInstance.post(`/user/cancel-request`, { friendId: id });
+      console.log(res);
+      setResults((prevResults)=>
+        prevResults.map((user)=> user.sendRequests._id === id ? {...user, sendRequests:false} : user )
+      )
+    } catch (error) {
+      console.error("Error canceling friend request:", error);
+    }
   }
 
   const renderActiveComponent = () => {
@@ -74,7 +90,7 @@ const AddFriend = () => {
     <>
       <div className="p-4 flex flex-col items-center justify-between">
         <h2 className="text-md font-semibold text-gray-800 dark:text-white mb-1">Add Friend</h2>
-        <button onClick={()=>console.log(results)}>check</button>
+        <button onClick={() => console.log(results)}>check</button>
         <div
           className="flex rounded-md items-center max-w-md w-full">
           <input
@@ -108,7 +124,7 @@ const AddFriend = () => {
           >Send Request</button>
         </div> */}
         {/* Render the active component */}
-      {/* <div className="mt-6 w-full">{renderActiveComponent()}</div> */}
+        {/* <div className="mt-6 w-full">{renderActiveComponent()}</div> */}
 
       </div>
 
@@ -142,52 +158,63 @@ const AddFriend = () => {
                   <p className="font-medium text-gray-800 dark:text-white">{user.fullName}</p>
                   <p className="text-xs text-gray-500">{user.email}</p>
                 </div>
-              <div className='flex flex-col gap-1 justify-center items-center'>
+                <div className='flex flex-col gap-1 justify-center items-center'>
 
-              {/* Invite or Pending Button */}
-        {user.sendRequests && !user.friendRequests && (
-          <>
-          <button
-            className="px-4 py-1 rounded-md bg-gray-300 text-black text-xs cursor-not-allowed"
-            disabled
-          >
-            Pending
-          </button>
-          <button
-            onClick={() => invaitedCancelHandler(user._id)}
-            className="px-4 py-1 rounded-md bg-gray-400 text-white text-xs hover:bg-gray-500 transition-all"
-          >
-            Cancel 
-          </button>
-          </> 
-        )}
-
-        {/* Accept/Decline Buttons */}
-        {user.friendRequests && (
-          <div className="flex gap-2">
-            <button
-              onClick={() => acceptRequestHandler(user._id)}
-              className="px-4 py-1 bg-blue-500 text-white rounded-md text-xs hover:bg-blue-600 transition-all"
-            >
-              Accept
-            </button>
-            <button
-              onClick={() => declineRequestHandler(user._id)}
-              className="px-4 py-1 bg-red-500 text-white rounded-md text-xs hover:bg-red-600 transition-all"
-            >
-              Decline
-            </button>
-          </div>
-        )}
-        {!user.sendRequests && !user.friendRequests && (
-          <button
-            onClick={() => friendsActionHandler(user._id)}
-            className="px-4 py-1 rounded-md bg-green-500 text-white text-xs hover:bg-green-600 transition-all"
-          >
-            Invite
-          </button>
-        )}
-
+                  {/* Already friends */}
+                  {user.friends ? (
+                    <p className="text-xs text-gray-500">Friends</p>
+                  ) : (
+                    <>
+                      {/* Invite or Pending Button */}
+                      {user.sendRequests && !user.friendRequests && (
+                        <>
+                          <button
+                            className="
+                              px-4 py-1 
+                              rounded-md
+                              text-black 
+                              text-xs 
+                              cursor-not-allowed
+                              "
+                            disabled
+                          >
+                            Pending
+                          </button>
+                          <button
+                            onClick={() => invaitedCancelHandler(user._id)}
+                            className="px-4 py-1 rounded-md bg-gray-400 text-white text-xs hover:bg-gray-500 transition-all"
+                          >
+                            Cancel
+                          </button>
+                        </>
+                      )}
+                      {/* Accept/Decline Buttons */}
+                      {user.friendRequests && (
+                        <div className="flex flex-col gap-2">
+                          <button
+                            onClick={() => acceptRequestHandler(user._id)}
+                            className="px-4 py-1 bg-blue-500 text-white rounded-md text-xs hover:bg-blue-600 transition-all"
+                          >
+                            Accept
+                          </button>
+                          <button
+                            onClick={() => declineRequestHandler(user._id)}
+                            className="px-4 py-1 bg-red-500 text-white rounded-md text-xs hover:bg-red-600 transition-all"
+                          >
+                            Decline
+                          </button>
+                        </div>
+                      )}
+                      {!user.sendRequests && !user.friendRequests && (
+                        <button
+                          onClick={() => friendsActionHandler(user._id)}
+                          className="px-4 py-1 rounded-md bg-green-500 text-white text-xs hover:bg-green-600 transition-all"
+                        >
+                          Invite
+                        </button>
+                      )}
+                    </>
+                  )}
                 </div>
               </li>
             ))}
