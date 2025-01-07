@@ -2,14 +2,52 @@ import React, {useState, useRef} from 'react';
 import { Image, Send, X } from "lucide-react";
 import toast from 'react-hot-toast';
 import { useChatStore } from '../../store/useChatStore';
+import {Filter} from "bad-words";
+import * as nsfwjs from 'nsfwjs'
 
 const MessageInput = () => {
     const [text, setText] = useState("");
     const [imagePreview, setImagePreview] = useState(null);
+    const [loading, setLoading] = useState(false);
     const fileInputRef = useRef(null);
     const textareaRef = useRef(null);
     const [error, setError] = useState("");
     const {sendMessage} = useChatStore();
+    const filter = new Filter();
+
+    // Function to check for harmful images
+  const checkImageForHarmfulness = async (imageBase64) => {
+    console.log(imageBase64);
+    try {
+      const model = await nsfwjs.load();
+      const img = new window.Image(); // Create an HTML image element
+      img.crossOrigin = "anonymous"; // Handle CORS issues
+      img.src = imageBase64; // Set the Base64 string as the image source
+      return new Promise((resolve)=>{
+        img.onload = async()=>{
+          try {
+            const predictions = await model.classify(img);
+            const harmful = predictions.some(
+              (p) =>
+                (["Porn", "Hentai", "Sexy"].includes(p.className) && p.probability > 0.7) ||
+                (p.className === "Porn" && p.probability > 0.5)
+            );
+            resolve(harmful);
+          } catch (error) {
+            resolve(false);
+          }
+        };
+
+        img.onerror = () => {
+          return false;
+        }
+
+      });
+    } catch (error) {
+        console.error("Error detecting harmful image:", error);
+        return false;
+      }
+    };
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
@@ -19,9 +57,24 @@ const MessageInput = () => {
         }
     
         const reader = new FileReader();
-        reader.onloadend = () => {
-          setImagePreview(reader.result);
-        };
+        // reader.onloadend = () => {
+        //   setImagePreview(reader.result);
+        // };
+        // reader.readAsDataURL(file);
+
+        reader.onloadend = async()=>{
+          setLoading(true);
+          const imageBase64 = reader.result;
+          const isHarmful = await checkImageForHarmfulness(imageBase64);
+          if(isHarmful){
+            toast.error("Harmful content detected. Please choose another image.");
+            setImagePreview(null);
+            if (fileInputRef.current) fileInputRef.current.value = "";
+          }else{
+            setImagePreview(reader.result);
+          }
+          setLoading(false);
+        }
         reader.readAsDataURL(file);
     };
 
@@ -33,10 +86,16 @@ const MessageInput = () => {
     const handleSendMessage = async (e) => {
         e.preventDefault();
         if (!text.trim() && !imagePreview) return;
-    
+
+        const cleanedText = filter.clean(text.trim());
+
+        if (cleanedText !== text.trim()) {
+          toast.error("Your message contained inappropriate language and was filtered.");
+        }
         try {
           await sendMessage({
-            text: text.trim(),
+            // text: text.trim(),
+            text: cleanedText,
             image: imagePreview,
           });
     
@@ -132,8 +191,10 @@ const MessageInput = () => {
             className={`hidden sm:flex btn btn-circle items-center
                      ${imagePreview ? "text-emerald-500" : "text-zinc-400"}`}
             onClick={() => fileInputRef.current?.click()}
+            disabled = {loading} 
             >
-            <Image size={25} />
+            {loading ? "..." : <Image size={25} />}
+            {/* <Image size={25} /> */}
           </button>
             </div>
             <button 

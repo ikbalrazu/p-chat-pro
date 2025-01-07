@@ -6,7 +6,7 @@ import { useUserStore } from '../../store/useUserStore';
 import Avatar from '../Avatar';
 
 const AddFriend = () => {
-  const { friendRequestList, authUser } = useAuthStore();
+  const { friendRequestList, authUser, onlineUsers } = useAuthStore();
   const { friendRequest } = useUserStore();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
@@ -165,7 +165,7 @@ const AddFriend = () => {
                 className="flex items-center justify-between p-2 border rounded-md mx-2"
               >
                 <div
-                  className="w-12 h-12 text-white rounded-full border flex items-center justify-center"
+                  className="w-12 h-12 text-white rounded-full border relative items-center justify-center"
                 >
                   {/* <img
                     src={user.profilePic || "https://randomuser.me/api/portraits/men/1.jpg"}
@@ -181,6 +181,9 @@ const AddFriend = () => {
                     imageUrl={user?.profilePic}
                     userId={user?._id}
                   />
+                  {onlineUsers.includes(user._id) && (
+                    <span className='absolute bottom-0 right-0 size-2 bg-green-500 rounded-full ring-2 ring-zinc-200' />
+                  )}
                 </div>
                 <div className="ml-3">
                   <p className="font-medium text-gray-800 dark:text-white">{user.fullName}</p>
