@@ -5,10 +5,10 @@ import { protectRoute } from "../middleware/auth.middleware.js";
 const router = express.Router();
 
 router.post("/friend-request", protectRoute, FriendRequest);
-router.post("/accept-request",AcceptRequest);
-router.post("/reject-request",RejectRequest);
+router.post("/accept-request", protectRoute, AcceptRequest);
+router.post("/reject-request", protectRoute, RejectRequest);
 router.post("/unfriend",Unfriend);
-router.post("/cancel-request", CancelRequest);
+router.post("/cancel-request",protectRoute, CancelRequest);
 router.get("/my-friends",protectRoute, MyFriends);
 router.get("/search-friends",protectRoute, SearchFriends);
 

@@ -3,6 +3,7 @@ import { axiosInstance } from '../../lib/axios';
 import debounce from 'lodash.debounce';
 import { useAuthStore } from '../../store/useAuthStore';
 import { useUserStore } from '../../store/useUserStore';
+import Avatar from '../Avatar';
 
 const AddFriend = () => {
   const { friendRequestList, authUser } = useAuthStore();
@@ -49,9 +50,7 @@ const AddFriend = () => {
   };
 
   const friendsActionHandler = async (id) => {
-    console.log(id);
     const res = await axiosInstance.post(`/user/friend-request`, { receiverId: id });
-    console.log(res);
     if(res.status === 200){
       setResults((prevResults)=>
         prevResults.map((user)=> user._id === id ? {...user, sendRequests:true} : user )
@@ -60,16 +59,38 @@ const AddFriend = () => {
     
   }
 
-  const invaitedCancelHandler = async (id) => {
+  const CancelRequestHandler = async (id) => {
     console.log(id);
     try {
       const res = await axiosInstance.post(`/user/cancel-request`, { friendId: id });
-      console.log(res);
-      setResults((prevResults)=>
-        prevResults.map((user)=> user.sendRequests._id === id ? {...user, sendRequests:false} : user )
-      )
+      if(res.status === 200){
+        setResults((prevResults)=>
+          prevResults.map((user)=> user._id === id ? {...user, sendRequests:false} : user )
+        )
+      }
+      
     } catch (error) {
       console.error("Error canceling friend request:", error);
+    }
+  }
+
+  const acceptRequestHandler = async (id) =>{
+    const res = await axiosInstance.post(`/user/accept-request`, { userId: id });
+    if(res.status === 200){
+      setResults((prevResults)=>
+        prevResults.map((user)=> user._id === id ? {...user, friends:true} : user )
+      )
+    }
+  }
+
+  const declineRequestHandler = async (id)=>{
+    console.log(id)
+    const res = await axiosInstance.post(`/user/reject-request`, { userId: id });
+    console.log(res);
+    if(res.status === 200){
+      setResults((prevResults)=>
+        prevResults.map((user)=> user._id === id ? {...user, friendRequests:false} : user )
+      )
     }
   }
 
@@ -144,14 +165,21 @@ const AddFriend = () => {
                 className="flex items-center justify-between p-2 border rounded-md mx-2"
               >
                 <div
-                  className="w-12 h-10 text-white rounded-full flex items-center justify-center"
+                  className="w-12 h-12 text-white rounded-full border flex items-center justify-center"
                 >
-                  <img
+                  {/* <img
                     src={user.profilePic || "https://randomuser.me/api/portraits/men/1.jpg"}
                     width="45"
                     height="45"
                     alt={user?.fullName}
                     className='overflow-hidden rounded-full'
+                  /> */}
+                  <Avatar
+                    width={48}
+                    height={48}
+                    name={user?.fullName}
+                    imageUrl={user?.profilePic}
+                    userId={user?._id}
                   />
                 </div>
                 <div className="ml-3">
@@ -181,7 +209,7 @@ const AddFriend = () => {
                             Pending
                           </button>
                           <button
-                            onClick={() => invaitedCancelHandler(user._id)}
+                            onClick={() => CancelRequestHandler(user._id)}
                             className="px-4 py-1 rounded-md bg-gray-400 text-white text-xs hover:bg-gray-500 transition-all"
                           >
                             Cancel
