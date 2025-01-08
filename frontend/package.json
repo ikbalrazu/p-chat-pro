@@ -18,6 +18,7 @@
     "lodash.debounce": "^4.0.8",
     "lucide-react": "^0.468.0",
     "nsfwjs": "^2.2.0",
+    "pchat-pro": "file:..",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-hot-toast": "^2.4.1",
