@@ -3,16 +3,11 @@ import Upload_Profile from "./Upload_Profile";
 import { useAuthStore } from "../../store/useAuthStore";
 
 const UserProfile = () => {
-  const [name, setName] = useState("John Doe");
-  const [email, setEmail] = useState("john.doe@example.com");
-  const {authUser, updateProfileInfo} = useAuthStore();
+  const {authUser, updateProfileInfo, isUpdatingProfileInfo} = useAuthStore();
 
   const [profile, setProfile] = useState({
     fullName: authUser.fullName,
-    email: authUser.email,
-    // phone: "+1-123-456-7890",
     bio:authUser.bio,
-    // picture: "https://randomuser.me/api/portraits/men/1.jpg",
   });
 
   const [isEditing, setIsEditing] = useState(false);
@@ -31,10 +26,9 @@ const UserProfile = () => {
 
   return (
     <div className="hidden md:block h-screen w-80 bg-white dark:bg-gray-800  border-r border-gray-300 lg:flex lg:flex-col">
-        {/* <div className="bg-white rounded-lg shadow-md p-6 w-full max-w-4xl h-screen"> */}
         {/* Profile Picture */}
         <Upload_Profile/>
-
+        <p className="text-center text-sm mb-3">{authUser.email}</p>
         {/* User Details */}
         <div 
         className="flex flex-col gap-3 text-sm px-6"
@@ -54,36 +48,6 @@ const UserProfile = () => {
             )}
           </div>
 
-          <div>
-            <label className="block text-gray-700">Email</label>
-            {isEditing ? (
-              <input
-                type="email"
-                name="email"
-                value={profile.email}
-                onChange={handleChange}
-                className="border rounded p-2 w-full"
-              />
-            ) : (
-              <p className="p-2 bg-gray-100 rounded">{profile.email}</p>
-            )}
-          </div>
-
-          {/* <div>
-            <label className="block text-gray-700">Phone</label>
-            {isEditing ? (
-              <input
-                type="text"
-                name="phone"
-                value={profile.phone}
-                onChange={handleChange}
-                className="border rounded p-2 w-full"
-              />
-            ) : (
-              <p className="p-2 bg-gray-100 rounded">{profile.phone}</p>
-            )}
-          </div> */}
-
           <div className="h-sm">
             <label className="block text-gray-700">Bio</label>
             {isEditing ? (
@@ -102,10 +66,12 @@ const UserProfile = () => {
         <div className="flex justify-end mt-2">
           {isEditing ? (
             <button
+              disabled={isUpdatingProfileInfo}
               onClick={handleSave}
-              className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
+              // className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
+              className={`bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 ${isUpdatingProfileInfo ? "cursor-not-allowed" : ""}`}
             >
-              Save
+              {isUpdatingProfileInfo ? "Saving.." : "Save"}
             </button>
           ) : (
             <button
@@ -118,8 +84,6 @@ const UserProfile = () => {
         </div>
         </div>
         
-        
-        {/* </div> */}
     </div>
   );
 };

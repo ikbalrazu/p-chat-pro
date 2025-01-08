@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuthStore } from '../store/useAuthStore';
 import { Eye, EyeOff, Loader2, Lock, Mail, MessageSquare } from "lucide-react";
@@ -7,12 +7,7 @@ import * as Yup from "yup";
 
 
 const Login = () => {
-  const [showPassword, setShowPassword] = useState(false);
-  const [formData, setFormData] = useState({
-    email:"",
-    password:""
-  });
-
+  const {checkAuth, authUser} = useAuthStore();
   const validationSchema = Yup.object({
     email: Yup.string()
       .email("Invalid email address.")
@@ -35,6 +30,10 @@ const Login = () => {
       login(formData);
     },
   });
+
+  useEffect(()=>{
+    authUser
+  },[])
 
   return (
     <section className='bg-gray-60 min-h-screen flex justify-center items-center'>

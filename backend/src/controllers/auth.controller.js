@@ -99,7 +99,6 @@ export const Logout = (req,res) =>{
 export const updateProfilePic = async (req,res) =>{
     try {
         const {profilePic} = req.body;
-        console.log(profilePic)
         const userId = req.user._id;
 
         if(!profilePic){
@@ -107,7 +106,7 @@ export const updateProfilePic = async (req,res) =>{
         }
 
         const user = await User.findById(userId);
-        console.log(user);
+        
         // Delete the old profile picture from Cloudinary
         if (user.profilePicId) {
             await cloudinary.uploader.destroy(user.profilePicId);
@@ -122,8 +121,6 @@ export const updateProfilePic = async (req,res) =>{
             //     { quality: 'auto:low' },
             // ],
         });
-        console.log(uploadResponse);
-        // res.status(200).json(uploadResponse);
         const updatedUser = await User.findByIdAndUpdate(userId, {profilePic:uploadResponse.secure_url, profilePicId:uploadResponse.public_id}, {new:true}).select("-password");
         
         res.status(200).json(updatedUser);
@@ -136,17 +133,24 @@ export const updateProfilePic = async (req,res) =>{
 export const updateProfileInfo = async(req,res)=>{
     try {
         const profile = req.body;
-        res.status(200).json({message: "success"});
-        console.log(profile);
+        const userId = req.user._id;
+        const user = await User.findById(userId);
+        if(!user){
+            return res.status(400).json({message:"Profile pic is required"});
+        }
+
+        const updatedInfo = await User.findByIdAndUpdate(userId,{fullName: profile.fullName, bio: profile.bio},{new:true}).select("-password");
+        res.status(200).json(updatedInfo);
         
     } catch (error) {
-        res.status(500).json({message: "Internal server error"});
+        res.status(500).json({message: error.message});
     }
 }
 
-export const checkAuth = (req, res) =>{
+export const checkAuth = async(req, res) =>{
     try {
-        res.status(200).json(req.user);
+        const user = req.user;
+        res.status(200).json(user);
     } catch (error) {
         res.status(500).json({message: "Internal server error"});
     }

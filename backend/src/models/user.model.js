@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema(
         },
         profilePic:{
             type: String,
-            default:"https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg"
+            default:""
         },
         profilePicId:{
             type: String,
@@ -32,9 +32,20 @@ const userSchema = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: "User"
         }],
+        notifications: [
+            {
+              type: { type: String },
+              message: String,
+              createdAt: { type: Date, default: Date.now },
+            },
+        ],
+        sendRequests: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User"
+        }],
         bio:{
             type: String,
-            minlength:100
+            maxlength:100
         }
     },
     {

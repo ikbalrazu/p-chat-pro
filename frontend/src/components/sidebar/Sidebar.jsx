@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import { IoChatbubbleEllipses } from "react-icons/io5";
 import { BiLogOut } from "react-icons/bi";
 import { FaUserPlus } from "react-icons/fa";
@@ -9,13 +9,21 @@ import ThemeToggle from '../ThemeToggle';
 import Conversation from '../conversation/Conversation';
 import { useUserStore } from '../../store/useUserStore';
 import { useUtilityStore } from '../../store/useUtilityStore';
+import { useNavigate } from "react-router-dom";
+
 
 const Sidebar = () => {
-    const {authUser} = useAuthStore();
-    const [editUserOpen,setEditUserOpen] = useState(false)
-    const [openSearchUser,setOpenSearchUser] = useState(false)
-    const {setUserProfileShow} = useUserStore();
-    const navigate = useUtilityStore((state) => state.navigate);
+  const Navigate = useNavigate();
+  const {authUser, logout} = useAuthStore();
+  const [editUserOpen,setEditUserOpen] = useState(false)
+  const [openSearchUser,setOpenSearchUser] = useState(false)
+  const {setUserProfileShow} = useUserStore();
+  const navigate = useUtilityStore((state) => state.navigate);
+  const [showOnlineOnly, setShowOnlineOnly] = useState(false);
+
+  // const filteredUsers = showOnlineOnly
+  //   ? users.filter((user) => onlineUsers.includes(user._id))
+  //   : users;
   
   return (
     <div className="
@@ -61,7 +69,7 @@ const Sidebar = () => {
 
         <div className="mt-auto mb-4">
           <NavLink 
-          className={({isActive})=>`w-10 h-10 bg-purple-500 text-white rounded-full flex items-center justify-center`} 
+          className={({isActive})=>`w-10 h-10 border text-white rounded-full flex items-center justify-center`} 
           onClick={()=>navigate("profile")}
           >
                 <Avatar
@@ -74,7 +82,10 @@ const Sidebar = () => {
             </NavLink>
         </div>
 
-        <button title='Logout' className='w-12 h-12 flex justify-center items-center cursor-pointer hover:bg-slate-200 rounded'>
+        <button
+        onClick={()=>logout(Navigate)} 
+        title='Logout' 
+        className='w-12 h-12 flex justify-center items-center cursor-pointer hover:bg-slate-200 rounded'>
         <span className='-ml-2'>
             <BiLogOut size={20}/>
         </span>

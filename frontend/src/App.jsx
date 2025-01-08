@@ -1,25 +1,30 @@
 import React, { useEffect } from 'react';
-import Navbar from './components/Navbar';
 import {Routes, Route, Navigate, Outlet} from 'react-router-dom';
 import SignUp from './pages/SignUp';
 import Login from './pages/Login';
 import HomePage from './pages/HomePage';
-import SettingsPage from './pages/SettingsPage';
-import ProfilePage from './pages/ProfilePage';
 import { useAuthStore } from './store/useAuthStore';
 import { Loader } from "lucide-react";
 import { Toaster } from "react-hot-toast";
-import Home from './pages/Home';
-import FindFriends from './components/FindFriends';
-import Conversation from './components/conversation/Conversation';
 
 const App = () => {
-  const {authUser, checkAuth, isCheckingAuth} = useAuthStore();
+  const {authUser, checkAuth, isCheckingAuth, friendList, onlineUsers} = useAuthStore();
+  
+  console.log(isCheckingAuth);
 
   useEffect(()=>{
-    checkAuth();
-    console.log(authUser);
+    // async function checkAuthUser() {
+    //   await checkAuth();
+    // }
     
+    // console.log(authUser);
+    // if(authUser){
+    //   console.log("authenticated user");
+    // }else{
+    //   console.log("not authenticated user");
+    // }
+    // checkAuthUser();
+    checkAuth(); 
   },[checkAuth]);
 
   if (isCheckingAuth && !authUser){
@@ -40,9 +45,9 @@ const App = () => {
       <Route path='/' element={authUser ? <HomePage/> : <Navigate to="/login"/>}/>
       <Route path='/signup' element={!authUser ? <SignUp/> : <Navigate to="/" />}/>
       <Route path='/login' element={!authUser ? <Login/> : <Navigate to="/" />}/>
-      <Route path='/conversation' element={authUser ? <Conversation/> : <Navigate to="/login" />}/>
+      {/* <Route path='/conversation' element={authUser ? <Conversation/> : <Navigate to="/login" />}/>
       <Route path='/settings' element={authUser ? <SettingsPage/> : <Navigate to="/login"/>}/>
-      <Route path='/profile' element={authUser ? <ProfilePage/> : <Navigate to="/login"/>}/>
+      <Route path='/profile' element={authUser ? <ProfilePage/> : <Navigate to="/login"/>}/> */}
       </Routes>
 
       
@@ -51,7 +56,7 @@ const App = () => {
       position="top-center"
       reverseOrder={false} 
       />
-      <Outlet/>
+      {/* <Outlet/> */}
     </div>
   )
 }
