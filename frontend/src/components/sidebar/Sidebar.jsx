@@ -26,8 +26,9 @@ const Sidebar = () => {
   //   : users;
   
   return (
-    <div className="
-    hidden 
+    <div 
+    className="
+    
     bg-white 
     dark:bg-gray-900 
     dark:text-white 

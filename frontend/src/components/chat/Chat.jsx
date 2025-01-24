@@ -40,7 +40,13 @@ const Chat = () => {
     }
   }, [messages]);
   return (
-    <div className="flex-1 flex flex-col">
+    <div 
+    className="
+    // flex-1 
+    flex 
+    flex-col
+    h-full
+    ">
       {/* Chat Window */}
       {/* Header */}
       <ChatHeader />

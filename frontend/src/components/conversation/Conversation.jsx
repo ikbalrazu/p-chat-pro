@@ -16,13 +16,24 @@ const Conversation = () => {
   const filteredUsers = myFriends.filter((user) =>
     user.fullName.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  // const [isMobileView, setIsMobileView] = useState(false);
+
+  // useEffect(()=>{
+  //   const handleResize = () => {
+  //     setIsMobileView(window.innerWidth < 768); // Mobile breakpoint (md)
+  //   };
+  //   handleResize();
+  //   window.addEventListener("resize", handleResize);
+  //   return () => window.removeEventListener("resize", handleResize);
+  // },[]);
   
   useEffect(() => {
     getMyFriends();
   }, [getMyFriends]);
 
   return (
-    <>
+    <div className='flex flex-col h-full w-full bg-white dark:bg-gray-800'>
       <div className="p-4 flex flex-col items-center justify-between">
         <h2 className="text-md font-semibold text-gray-800 dark:text-white mb-1">Conversations</h2>
         <div className="w-full max-w-md">
@@ -104,7 +115,7 @@ const Conversation = () => {
       </div>
       <div>
       </div>
-    </>
+    </div>
   )
 }
 

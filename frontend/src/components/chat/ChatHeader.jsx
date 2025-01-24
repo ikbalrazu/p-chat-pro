@@ -1,23 +1,38 @@
 import React from 'react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 import { IoIosArrowBack } from "react-icons/io";
 import { useChatStore } from '../../store/useChatStore';
 import { useAuthStore } from '../../store/useAuthStore';
 import Avatar from '../Avatar';
+import { useUtilityStore } from '../../store/useUtilityStore';
 
 const ChatHeader = () => {
-    const {selectedUser} = useChatStore();
+    const {selectedUser, setSelectedUser } = useChatStore();
     const { onlineUsers } = useAuthStore();
+
+    const navigate = useUtilityStore((state) => state.navigate);
+
+    const handleBackClick = () => {
+        setSelectedUser(null); // Clear the selected user to show the Conversation component
+        navigate('conversation'); // Navigate to the Conversation view
+    };
 
     return (
         <div className="p-2 bg-white border-b border-gray-300 flex items-center justify-between">
             <div className="flex items-center">
-                <NavLink
-                    onClick={() => navigate('profile')}
+                {/* <NavLink
+                    onClick={() => navigate('conversation')}
                     className='md:hidden lg:hidden xl:hidden 2xl:hidden p-2 mr-1 hover:bg-slate-100'
                 >
                     <IoIosArrowBack size={20} />
-                </NavLink>
+                </NavLink> */}
+
+                <button
+                    onClick={handleBackClick}
+                    className="md:hidden lg:hidden xl:hidden 2xl:hidden p-2 mr-1 hover:bg-slate-100"
+                >
+                    <IoIosArrowBack size={20} />
+                </button>
 
                 <div className="w-10 h-10 text-white rounded-full flex items-center justify-center border">
                     {/* <img

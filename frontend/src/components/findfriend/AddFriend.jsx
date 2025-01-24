@@ -111,7 +111,6 @@ const AddFriend = () => {
     <>
       <div className="p-4 flex flex-col items-center justify-between">
         <h2 className="text-md font-semibold text-gray-800 dark:text-white mb-1">Add Friend</h2>
-        <button onClick={() => console.log(results)}>check</button>
         <div
           className="flex rounded-md items-center max-w-md w-full">
           <input
