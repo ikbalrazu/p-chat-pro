@@ -28,7 +28,8 @@ const Sidebar = () => {
   return (
     <div 
     className="
-    
+    flex
+    flex-col
     bg-white 
     dark:bg-gray-900 
     dark:text-white 
@@ -42,6 +43,7 @@ const Sidebar = () => {
     items-center 
     py-4
     overflow-hidden
+    h-screen
     ">
       <NavLink 
         className={({isActive})=>`w-12 h-12 flex justify-center items-center cursor-pointer hover:bg-slate-200`}
@@ -51,7 +53,7 @@ const Sidebar = () => {
             <IoChatbubbleEllipses
             size={20}
             />
-        </NavLink>
+      </NavLink>
 
         <NavLink 
         title='Add Friend' 
@@ -67,7 +69,7 @@ const Sidebar = () => {
             <p>This is a sample popup/modal using Tailwind CSS and React!</p>
             </Modal> */}
         </NavLink>
-
+        
         <div className="mt-auto mb-4">
           <NavLink 
           className={({isActive})=>`w-10 h-10 border text-white rounded-full flex items-center justify-center`} 

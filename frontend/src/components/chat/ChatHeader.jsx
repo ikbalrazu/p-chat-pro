@@ -9,11 +9,13 @@ import { useUtilityStore } from '../../store/useUtilityStore';
 const ChatHeader = () => {
     const {selectedUser, setSelectedUser } = useChatStore();
     const { onlineUsers } = useAuthStore();
+    const {toggleSidebar} = useUtilityStore();
 
     const navigate = useUtilityStore((state) => state.navigate);
 
     const handleBackClick = () => {
         setSelectedUser(null); // Clear the selected user to show the Conversation component
+        toggleSidebar(true);
         navigate('conversation'); // Navigate to the Conversation view
     };
 

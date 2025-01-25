@@ -13,14 +13,20 @@ import DesktopSidebar from '../components/DesktopSidebar';
 const HomePage = () => {
   const {checkAuth, authUser, onlineUsers} = useAuthStore();
   const {selectedUser} = useChatStore();
-  const {currentPage} = useUtilityStore();
+  const {currentPage, sidebarVisible} = useUtilityStore();
 
   return (
     <div className="flex h-screen bg-gray-100">
      
     {/* <DesktopSidebar/> */}
+    {/* {sidebarVisible && (
+      <Sidebar/>
+    )} */}
 
-    <Sidebar/>
+    <div className={`${sidebarVisible || 'hidden'} md:flex`}>
+      <Sidebar/>
+    </div>
+    
 
     <div 
     // className="

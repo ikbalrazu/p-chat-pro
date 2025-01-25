@@ -1,5 +1,6 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { IoIosArrowBack } from "react-icons/io";
+import { IoIosArrowDown } from "react-icons/io";
 import { Link, NavLink } from 'react-router-dom';
 import { useChatStore } from '../../store/useChatStore';
 import MessageInput from './MessageInput';
@@ -23,6 +24,9 @@ const Chat = () => {
   const { onlineUsers, authUser } = useAuthStore();
   const navigate = useUtilityStore((state) => state.navigate);
   const messageEndRef = useRef(null);
+  const chatContainerRef = useRef(null);
+  const [showScrollToBottom, setShowScrollToBottom] = useState(false);
+
   TimeAgo.addDefaultLocale(en);
   const timeAgo = new TimeAgo('en-US')
 
@@ -39,6 +43,26 @@ const Chat = () => {
       messageEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [messages]);
+
+  // Scroll event to toggle the scroll-to-bottom button
+  const handleScroll = () => {
+    const chatContainer = chatContainerRef.current;
+    if (chatContainer) {
+      const isAtBottom =
+        chatContainer.scrollHeight - chatContainer.scrollTop <=
+        chatContainer.clientHeight + 100; // 100px tolerance
+      console.log(isAtBottom);  
+      setShowScrollToBottom(!isAtBottom);
+    }
+  };
+
+  // Scroll to the bottom
+  const scrollToBottom = () => {
+    if (messageEndRef.current) {
+      messageEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <div 
     className="
@@ -46,19 +70,25 @@ const Chat = () => {
     flex 
     flex-col
     h-full
+    relative
     ">
       {/* Chat Window */}
       {/* Header */}
       <ChatHeader />
 
       {/* Chat Messages */}
-      <div className="flex-1 p-4 overflow-y-auto">
+      <div
+      ref={chatContainerRef}
+      onScroll={handleScroll} 
+      className="flex-1 p-4 overflow-y-auto relative"
+      >
         {/* Add messages dynamically */}
         {messages.map((message) => (
           <div
             key={message._id}
             className={`flex ${message.senderId === authUser._id ? "justify-end" : "justify-start"}`}
-            ref={messageEndRef}
+            
+            
           >
             {/* profile picture */}
             {message.senderId !== authUser._id && (
@@ -118,55 +148,22 @@ const Chat = () => {
               </time>
             </div>
 
-            {/* <div className='flex items-start'>
-            <div className="size-8 rounded-full border">
-              <img
-                className='rounded-full'
-                src={
-                  message.senderId === authUser._id
-                    ? authUser.profilePic || "/avatar.png"
-                    : selectedUser.profilePic || "/avatar.png"
-                }
-                alt="profile pic"
-              />
-            </div>
-            </div> */}
-
-
-
-            {/* <div className="chat-bubble flex flex-col">
-              {message.image && (
-                <img
-                  src={message.image}
-                  alt="Attachment"
-                  className="sm:max-w-[200px] rounded-md mb-2"
-                />
-              )}
-              {message.text && <p>{message.text}</p>}
-            </div> */}
-
-            {/* <div className="chat-header mb-1">
-              <time className="text-xs opacity-50 ml-1">
-                {timeAgo.format(new Date(message.createdAt),"twitter")}
-              </time>
-            </div> */}
-
           </div>
         ))}
-        {/* <div className="flex items-start">
-          <div className="w-10 h-10 bg-purple-500 text-white rounded-full flex items-center justify-center">
-          j
-          </div>
-          <div className="ml-3 p-3 bg-gray-200 rounded-lg">
-          <p className="text-sm text-gray-800">Hi! How are you doing?</p>
-          </div>
-          </div>
-          <div className="flex items-end justify-end">
-          <div className="mr-3 mt-2 p-3 bg-blue-500 text-white rounded-lg">
-            <p className="text-sm">I'm doing well, thank you! 😊</p>
-          </div>
-        </div>  */}
+      
+      <div ref={messageEndRef}></div>
       </div>
+
+      {/* Scroll-to-Bottom Button */}
+      {showScrollToBottom && (
+        <button
+          onClick={scrollToBottom}
+          className="absolute bottom-[80px] left-1/2 transform -translate-x-1/2 bg-gray-500 text-white p-3 rounded-full shadow-md hover:bg-gray-600 z-10"
+          title="Scroll to last message"
+        >
+          <IoIosArrowDown size={20} />
+        </button>
+      )}
 
       {/* Message Input */}
       <MessageInput />

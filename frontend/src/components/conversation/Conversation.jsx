@@ -3,11 +3,13 @@ import { useChatStore } from '../../store/useChatStore';
 import { useAuthStore } from '../../store/useAuthStore';
 import { useUserStore } from '../../store/useUserStore';
 import Avatar from '../Avatar';
+import { useUtilityStore } from '../../store/useUtilityStore';
 
 const Conversation = () => {
   const { onlineUsers } = useAuthStore();
   const { getUsers, users, selectedUser, setSelectedUser, isUsersLoading } = useChatStore();
   const { getMyFriends, myFriends, isFriendsLoading } = useUserStore();
+  const { toggleSidebar } = useUtilityStore();
 
   // State for search input
   const [searchTerm, setSearchTerm] = useState("");
@@ -17,16 +19,10 @@ const Conversation = () => {
     user.fullName.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // const [isMobileView, setIsMobileView] = useState(false);
-
-  // useEffect(()=>{
-  //   const handleResize = () => {
-  //     setIsMobileView(window.innerWidth < 768); // Mobile breakpoint (md)
-  //   };
-  //   handleResize();
-  //   window.addEventListener("resize", handleResize);
-  //   return () => window.removeEventListener("resize", handleResize);
-  // },[]);
+  const handleUserClick = (user) => {
+    setSelectedUser(user);
+    toggleSidebar(false); // Hide sidebar on mobile
+  };
   
   useEffect(() => {
     getMyFriends();
@@ -72,7 +68,7 @@ const Conversation = () => {
             {filteredUsers.map((user) => (
               <button
                 key={user._id}
-                onClick={() => setSelectedUser(user)}
+                onClick={() => handleUserClick(user)}
                 className="
             w-full p-4 flex items-center hover:bg-gray-200 cursor-pointer
             "
