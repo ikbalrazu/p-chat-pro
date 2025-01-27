@@ -96,6 +96,40 @@ export const Logout = (req,res) =>{
     }
 }
 
+export const ForgotPassword = async(req,res)=>{
+    const {email} = req.body;
+    try {
+        const user = await User.find({email});
+        if(!user) return res.status(404).json({error: "Email not found"});
+
+        //generate reset token
+        const jwtToken = jwt.sign({ userId: id }, process.env.JWT_SECRET, {
+            expiresIn: "5m",
+        });
+
+        var mailOptions = {
+            from: ' "Reset Your Password" <amalinvestorportal@gmail.com>',
+            to: resetemail,
+            subject: "Reset Password Link - Investment Portal",
+            html: `<p>Your email: ${resetemail}! </p><p>Your id: ${id}</p> <p>You requested for reset password, kindly use this <a href="${process.env.Frontent_URL}/resetpassword/${id}/${jwtToken}">Link</a> to reset your password</p>`,
+        };
+
+        transporter.sendMail(mailOptions, function (error, info) {
+            if (error) {
+              console.log(error);
+              res.json(error.message);
+              //console.log(email);
+            } else {
+              res.json({ message: "send email successfully" });
+              console.log("Email sent: " + info.response);
+            }
+        });
+
+    } catch (error) {
+        
+    }
+}
+
 export const updateProfilePic = async (req,res) =>{
     try {
         const {profilePic} = req.body;
