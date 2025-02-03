@@ -8,28 +8,54 @@ import { useChatStore } from '../store/useChatStore';
 import NotSelectedUser from '../components/conversation/NotSelectedUser';
 import { useUtilityStore } from '../store/useUtilityStore';
 import AddFriend from '../components/findfriend/AddFriend';
+import DesktopSidebar from '../components/DesktopSidebar';
 
 const HomePage = () => {
   const {checkAuth, authUser, onlineUsers} = useAuthStore();
   const {selectedUser} = useChatStore();
-  const {currentPage} = useUtilityStore();
+  const {currentPage, sidebarVisible} = useUtilityStore();
 
   return (
     <div className="flex h-screen bg-gray-100">
+     
+    {/* <DesktopSidebar/> */}
+    {/* {sidebarVisible && (
       <Sidebar/>
-      <div className="hidden md:block h-screen w-80 bg-white dark:bg-gray-800  border-r border-gray-300 flex flex-col">
-      {currentPage === 'conversation' && <Conversation />}
-      {currentPage === 'profile' && <UserProfile />}
-      {currentPage === 'addfriend' && <AddFriend />}
-      </div>
-      {/* <div className="block md:hidden w-full h-full">
-      {currentPage === 'conversation' && <Conversation />}
-      {currentPage === 'profile' && <UserProfile />}
-      {currentPage === 'addfriend' && <AddFriend />}
-      </div> */}
-      {/* <Conversation/> */}
-      {!selectedUser ? <NotSelectedUser/> : <Chat/>}
-      {/* <ChatContainer/> */}
+    )} */}
+
+    <div className={`${sidebarVisible || 'hidden'} md:flex`}>
+      <Sidebar/>
+    </div>
+    
+
+    <div 
+    // className="
+    //   md:flex 
+    //   h-screen 
+    //   w-80 
+    //   bg-white
+    //   dark:bg-gray-800  
+    //   border-r 
+    //   border-gray-300  
+    //   flex-col
+    // "
+    className={`
+      ${selectedUser ? "hidden md:flex" : "flex"}
+      flex-col h-full md:w-80 w-full bg-white dark:bg-gray-800 border-r border-gray-300`}
+    >
+    {currentPage === 'conversation' && <Conversation />}
+    {currentPage === 'profile' && <UserProfile />}
+    {currentPage === 'addfriend' && <AddFriend />}
+    {/* {currentPage === 'chat' && <Chat/>} */}
+    </div>
+    
+    <div className="flex-1">
+    {selectedUser ? <Chat /> : <NotSelectedUser />}
+    </div>
+
+    {/* {!selectedUser ? <NotSelectedUser/> : <Chat/>} */}
+    
+      
     </div>
   )
 }
