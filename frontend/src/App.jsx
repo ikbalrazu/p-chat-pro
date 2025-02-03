@@ -7,7 +7,6 @@ import { useAuthStore } from './store/useAuthStore';
 import { Loader } from "lucide-react";
 import { Toaster } from "react-hot-toast";
 import ForgotPassword from './components/forgotpassword/ForgotPassword';
-import OTPCodeVerify from './components/forgotpassword/OTPCodeVerify';
 import ResetPassword from './components/forgotpassword/ResetPassword';
 
 const App = () => {
