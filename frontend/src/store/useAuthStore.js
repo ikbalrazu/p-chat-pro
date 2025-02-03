@@ -91,6 +91,16 @@ export const useAuthStore = create((set, get) => ({
         }
     },
 
+    forgotPassword: async(email)=>{
+        try {
+            console.log(email);
+            const res = await axiosInstance.post("/auth/forgot-password",{email});
+            console.log(res);
+        } catch (error) {
+            
+        }
+    },
+
     updateProfilePic: async(imagedata)=>{
         set({ isUpdatingProfile: true });
         try {

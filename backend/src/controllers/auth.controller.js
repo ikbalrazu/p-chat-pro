@@ -2,6 +2,8 @@ import User from "../models/user.model.js";
 import bcrypt from 'bcrypt';
 import { generateToken } from "../utils/jwtToken.js";
 import cloudinary from "../utils/cloudinary.js";
+import nodemailer from "nodemailer";
+import jwt from "jsonwebtoken";
 
 export const Signup = async (req,res) =>{
     const {fullName, email, password} = req.body;
@@ -99,19 +101,94 @@ export const Logout = (req,res) =>{
 export const ForgotPassword = async(req,res)=>{
     const {email} = req.body;
     try {
+        console.log(email);
         const user = await User.find({email});
+        // console.log(user);
         if(!user) return res.status(404).json({error: "Email not found"});
 
         //generate reset token
-        const jwtToken = jwt.sign({ userId: id }, process.env.JWT_SECRET, {
+        const jwtToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
             expiresIn: "5m",
         });
 
+        console.log(jwtToken);
+
+        var transporter = nodemailer.createTransport({
+            service:"gmail",
+            auth:{
+                user: process.env.user,
+                pass: process.env.pass
+            }
+        });
+
         var mailOptions = {
-            from: ' "Reset Your Password" <amalinvestorportal@gmail.com>',
-            to: resetemail,
-            subject: "Reset Password Link - Investment Portal",
-            html: `<p>Your email: ${resetemail}! </p><p>Your id: ${id}</p> <p>You requested for reset password, kindly use this <a href="${process.env.Frontent_URL}/resetpassword/${id}/${jwtToken}">Link</a> to reset your password</p>`,
+            from: ' "Reset Your Password" <P-Chat-Pro>',
+            to: email,
+            subject: "Reset Password Link - P-Chat-Pro",
+            // html: `<p>Your email: ${email}! </p><p>You requested for reset password, kindly use this <a href="${process.env.Frontent_URL}/forgot-password/reset-password/${jwtToken}">Link</a> to reset your password</p>`,
+            html: `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Reset Your Password - P-Chat-Pro</title>
+                <style>
+                    body {
+                        font-family: Arial, sans-serif;
+                        background-color: #f4f4f4;
+                        margin: 0;
+                        padding: 0;
+                    }
+                    .container {
+                        max-width: 500px;
+                        margin: 30px auto;
+                        background-color: #ffffff;
+                        padding: 20px;
+                        border-radius: 8px;
+                        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                        text-align: center;
+                    }
+                    h2 {
+                        color: #002D74;
+                    }
+                    p {
+                        font-size: 16px;
+                        color: #555;
+                    }
+                    .button {
+                        display: inline-block;
+                        margin-top: 15px;
+                        padding: 12px 20px;
+                        background-color: #002D74;
+                        color: #ffffff;
+                        text-decoration: none;
+                        font-weight: bold;
+                        border-radius: 5px;
+                    }
+                    .footer {
+                        margin-top: 20px;
+                        font-size: 12px;
+                        color: #888;
+                    }
+                </style>
+            </head>
+            <body>
+
+            <div class="container">
+                <h2>P-Chat-Pro - Password Reset</h2>
+                <p>Your email: <strong>${email}</strong></p>
+                <p>You requested to reset your password. Click the button below to proceed:</p>
+                <a class="button" href="${process.env.Frontend_URL}/forgot-password/reset-password/${jwtToken}">
+                    Reset Password
+                </a>
+                <p>If you didn’t request this, you can safely ignore this email.</p>
+                <p class="footer">© 2025 P-Chat-Pro. All rights reserved.</p>
+            </div>
+
+            </body>
+            </html>
+            `
         };
 
         transporter.sendMail(mailOptions, function (error, info) {
