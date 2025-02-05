@@ -1,5 +1,4 @@
 import React from 'react'
-import { NavLink, useNavigate } from 'react-router-dom'
 import { IoIosArrowBack } from "react-icons/io";
 import { useChatStore } from '../../store/useChatStore';
 import { useAuthStore } from '../../store/useAuthStore';
@@ -37,13 +36,6 @@ const ChatHeader = () => {
                 </button>
 
                 <div className="w-10 h-10 text-white rounded-full flex items-center justify-center border">
-                    {/* <img
-                        src={selectedUser.profilePic || "https://randomuser.me/api/portraits/men/1.jpg"}
-                        width="40"
-                        height="40"
-                        alt={selectedUser?.fullName}
-                        className='overflow-hidden rounded-full'
-                    /> */}
                     <Avatar
                     width={40}
                     height={40}

@@ -9,7 +9,6 @@ const ForgotPassword = () => {
 
   const MailHandler = async() => {
     forgotPassword(email);
-
   }
 
   return (
