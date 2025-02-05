@@ -1,13 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { IoIosArrowBack } from "react-icons/io";
 import { IoIosArrowDown } from "react-icons/io";
-import { Link, NavLink } from 'react-router-dom';
 import { useChatStore } from '../../store/useChatStore';
 import MessageInput from './MessageInput';
 import { useUtilityStore } from '../../store/useUtilityStore';
 import { useAuthStore } from '../../store/useAuthStore';
 import ChatHeader from './ChatHeader';
-import { formatMessageTime } from '../../lib/utils';
 import TimeAgo from 'javascript-time-ago';
 import en from "javascript-time-ago/locale/en.json";
 import Avatar from '../Avatar';
@@ -26,11 +23,21 @@ const Chat = () => {
   const messageEndRef = useRef(null);
   const chatContainerRef = useRef(null);
   const [showScrollToBottom, setShowScrollToBottom] = useState(false);
+  const [fullScreenImage, setFullScreenImage] = useState(null);
+
 
   TimeAgo.addDefaultLocale(en);
   const timeAgo = new TimeAgo('en-US')
 
-  console.log(messages);
+  // Open full-screen image
+  const openFullScreenImage = (imageUrl) => {
+    setFullScreenImage(imageUrl);
+  };
+
+  // Close full-screen image
+  const closeFullScreenImage = () => {
+    setFullScreenImage(null);
+  };
 
   useEffect(() => {
     getMessages(selectedUser._id);
@@ -51,7 +58,6 @@ const Chat = () => {
       const isAtBottom =
         chatContainer.scrollHeight - chatContainer.scrollTop <=
         chatContainer.clientHeight + 100; // 100px tolerance
-      console.log(isAtBottom);  
       setShowScrollToBottom(!isAtBottom);
     }
   };
@@ -93,11 +99,6 @@ const Chat = () => {
             {/* profile picture */}
             {message.senderId !== authUser._id && (
               <div className="w-8 h-8 flex-shrink-0 mr-2 border rounded-full">
-                {/* <img
-                  src={selectedUser.profilePic || "/avatar.png"}
-                  alt="profile"
-                  className="w-full h-full rounded-full object-cover"
-                /> */}
                 <Avatar
                   width={32}
                   height={32}
@@ -119,6 +120,7 @@ const Chat = () => {
                   src={message.image}
                   alt="Attachment"
                   className="max-w-full rounded-md mb-0.5"
+                  onClick={()=>openFullScreenImage(message.image)}
                 />
               )}
               {message.text && (
@@ -167,6 +169,20 @@ const Chat = () => {
 
       {/* Message Input */}
       <MessageInput />
+
+      {/* Full-Screen Image Viewer */}
+      {fullScreenImage && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-90 flex justify-center items-center z-50"
+          onClick={closeFullScreenImage}
+        >
+          <img
+            src={fullScreenImage}
+            alt="Full Screen Preview"
+            className="max-w-full max-h-full object-contain"
+          />
+        </div>
+      )}
 
     </div>
   )
