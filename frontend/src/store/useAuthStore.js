@@ -16,6 +16,8 @@ export const useAuthStore = create((set, get) => ({
     isCheckingAuth: true,
     userProfileShow: false,
 
+    tokenValidity: null,
+
     socket: null,
     onlineUsers: [],
     notifications: [],
@@ -95,9 +97,33 @@ export const useAuthStore = create((set, get) => ({
         try {
             console.log(email);
             const res = await axiosInstance.post("/auth/forgot-password",{email});
-            console.log(res);
+            if(res.data.message === "Password reset email sent successfully"){
+                toast.success("Email Send Successfully!");
+                // navigate("/login");
+            }
         } catch (error) {
-            
+            const errorMessage = error?.response?.data?.error || "Something went wrong!";
+            toast.error(errorMessage);
+        }
+    },
+
+    verifyJWTToken: async(token)=>{
+        try {
+            const {tokenValidity} = get();
+            console.log(token);
+            const res = await axiosInstance.post("/auth/verify-jwt-token",{token});
+            console.log(res);
+            if(res.data.message === "Valid Link"){
+                set({ tokenValidity: true });
+                // toast.success("Valid Link!");
+            }else{
+                set({ tokenValidity: false });
+                // toast.error(res.data.message || "Invalid or expired token.");
+            }
+        } catch (error) {
+            set({ tokenValidity: false });
+            // const errorMessage = error?.response?.data?.message || "Something went wrong.";
+            // toast.error(errorMessage);
         }
     },
 
