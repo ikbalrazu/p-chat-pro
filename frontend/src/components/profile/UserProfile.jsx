@@ -42,18 +42,6 @@ const UserProfile = () => {
     }
   };
 
-  // const handleChange = (e) => {
-  //   const { name, value } = e.target;
-  //   setProfile({ ...profile, [name]: value });
-  // };
-
-  // const handleSave = async() => {
-  //   console.log("Updated Profile:", profile);
-  //   await updateProfileInfo(profile);
-
-  //   setIsEditing(false);
-  // };
-
   return (
     <div className="flex flex-col h-screen w-full bg-white dark:bg-gray-800  border-r border-gray-300">
         {/* Profile Picture */}
@@ -112,27 +100,6 @@ const UserProfile = () => {
               <p className="p-2 bg-gray-100 rounded">{formik.values.bio}</p>
             )}
           </div>
-
-          {/* Edit/Save Buttons */}
-        {/* <div className="flex justify-end mt-2">
-          {isEditing ? (
-            <button
-              type="submit"
-              disabled={isUpdatingProfileInfo}
-              onClick={handleEditClick}
-              className={`bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 ${isUpdatingProfileInfo ? "cursor-not-allowed" : ""}`}
-            >
-              {isUpdatingProfileInfo ? "Saving.." : "Save"}
-            </button>
-          ) : (
-            <button
-              onClick={() => setIsEditing(true)}
-              className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
-            >
-              Edit Profile
-            </button>
-          )}
-        </div> */}
 
 <div className="flex justify-end mt-2">
           <button
