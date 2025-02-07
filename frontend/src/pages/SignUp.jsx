@@ -107,10 +107,6 @@ const SignUp = () => {
         Login with Google
       </button>
 
-      {/* <div class="mt-5 text-xs border-b border-[#002D74] py-4 text-[#002D74]">
-        <a href="#">Forgot your password?</a>
-      </div> */}
-
       <div class="mt-3 text-xs flex justify-between items-center text-[#002D74]">
         <p>Already have an account?</p>
         <Link to='/login' className="py-2 px-5 bg-white border rounded-xl hover:scale-110 duration-300">Login</Link>
