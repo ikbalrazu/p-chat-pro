@@ -2,7 +2,7 @@ import React from 'react'
 
 const ProfilePage = () => {
   return (
-    <div className="hidden md:block w-80 bg-white border-r border-gray-300 flex flex-col">
+    <div className="hidden md:block w-80 bg-white border-r border-gray-300 flex-col">
     <div className="p-4 border-b border-gray-300 flex items-center justify-between">
         <h2 className="text-lg font-semibold text-gray-800">Conversations</h2>
         <button className="p-2 bg-gray-200 rounded-full hover:bg-gray-300">

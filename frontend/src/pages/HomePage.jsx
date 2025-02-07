@@ -8,7 +8,6 @@ import { useChatStore } from '../store/useChatStore';
 import NotSelectedUser from '../components/conversation/NotSelectedUser';
 import { useUtilityStore } from '../store/useUtilityStore';
 import AddFriend from '../components/findfriend/AddFriend';
-import DesktopSidebar from '../components/DesktopSidebar';
 
 const HomePage = () => {
   const {checkAuth, authUser, onlineUsers} = useAuthStore();
