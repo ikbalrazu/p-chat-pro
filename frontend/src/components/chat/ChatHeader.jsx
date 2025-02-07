@@ -21,12 +21,6 @@ const ChatHeader = () => {
     return (
         <div className="p-2 bg-white border-b border-gray-300 flex items-center justify-between">
             <div className="flex items-center">
-                {/* <NavLink
-                    onClick={() => navigate('conversation')}
-                    className='md:hidden lg:hidden xl:hidden 2xl:hidden p-2 mr-1 hover:bg-slate-100'
-                >
-                    <IoIosArrowBack size={20} />
-                </NavLink> */}
 
                 <button
                     onClick={handleBackClick}

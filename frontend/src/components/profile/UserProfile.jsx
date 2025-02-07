@@ -7,11 +7,6 @@ import * as Yup from "yup";
 const UserProfile = () => {
   const {authUser, updateProfileInfo, isUpdatingProfileInfo} = useAuthStore();
 
-  // const [profile, setProfile] = useState({
-  //   fullName: authUser.fullName,
-  //   bio:authUser.bio,
-  // });
-
   const [isEditing, setIsEditing] = useState(false);
 
   const formik = useFormik({
@@ -60,8 +55,6 @@ const UserProfile = () => {
               <input
                 type="text"
                 name="fullName"
-                // value={profile.fullName}
-                // onChange={handleChange}
                 value={formik.values.fullName}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
@@ -72,7 +65,6 @@ const UserProfile = () => {
               )}
               </>
             ) : (
-              // <p className="p-2 bg-gray-100 rounded">{profile.fullName}</p>
               <p className="p-2 bg-gray-100 rounded">{formik.values.fullName}</p>
             )}
           </div>
@@ -84,8 +76,6 @@ const UserProfile = () => {
               <textarea
                 type="text"
                 name="bio"
-                // value={profile.bio}
-                // onChange={handleChange}
                 value={formik.values.bio}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
@@ -96,7 +86,6 @@ const UserProfile = () => {
               )}
               </>
             ) : (
-              // <p className="p-2 bg-gray-100 rounded h-[40px]">{profile.bio}</p>
               <p className="p-2 bg-gray-100 rounded">{formik.values.bio}</p>
             )}
           </div>

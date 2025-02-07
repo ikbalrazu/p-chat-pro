@@ -72,19 +72,11 @@ const Conversation = () => {
                 className="
             w-full p-4 flex items-center hover:bg-gray-200 cursor-pointer
             "
-              // ${selectedUser?._id === user._id ? "bg-base-300 ring-1 ring-base-300" : ""}
 
               >
                 <div
                   className='relative w-10 h-10'
                 >
-                  {/* <img
-                    src={user.profilePic || "https://randomuser.me/api/portraits/men/1.jpg"}
-                    width="40"
-                    height="40"
-                    alt={user?.fullName}
-                    className='overflow-hidden rounded-full'
-                  /> */}
                   <div className='border rounded-full'>
                   <Avatar
                     width={40}

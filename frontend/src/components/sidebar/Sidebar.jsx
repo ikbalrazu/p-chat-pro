@@ -20,10 +20,6 @@ const Sidebar = () => {
   const {setUserProfileShow} = useUserStore();
   const navigate = useUtilityStore((state) => state.navigate);
   const [showOnlineOnly, setShowOnlineOnly] = useState(false);
-
-  // const filteredUsers = showOnlineOnly
-  //   ? users.filter((user) => onlineUsers.includes(user._id))
-  //   : users;
   
   return (
     <div 
@@ -61,13 +57,6 @@ const Sidebar = () => {
         onClick={()=>navigate("addfriend")}
         >
             <FaUserPlus size={20}/>
-            {/* <Modal
-            isOpen={isModalOpen}
-            onClose={() => setIsModalOpen(false)}
-            title="Example Popup"
-            >
-            <p>This is a sample popup/modal using Tailwind CSS and React!</p>
-            </Modal> */}
         </NavLink>
         
         <div className="mt-auto mb-4">

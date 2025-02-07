@@ -3,7 +3,7 @@ import { Image, Send, X } from "lucide-react";
 import toast from 'react-hot-toast';
 import { useChatStore } from '../../store/useChatStore';
 import {Filter} from "bad-words";
-import * as nsfwjs from 'nsfwjs'
+import * as nsfwjs from 'nsfwjs';
 
 const MessageInput = () => {
     const [text, setText] = useState("");
@@ -19,7 +19,7 @@ const MessageInput = () => {
   const checkImageForHarmfulness = async (imageBase64) => {
     console.log(imageBase64);
     try {
-      const model = await nsfwjs.load();
+      const model = await nsfwjs?.load();
       const img = new window.Image(); // Create an HTML image element
       img.crossOrigin = "anonymous"; // Handle CORS issues
       img.src = imageBase64; // Set the Base64 string as the image source
@@ -27,6 +27,7 @@ const MessageInput = () => {
         img.onload = async()=>{
           try {
             const predictions = await model.classify(img);
+            console.log("NSFW Predictions:", predictions);
             const harmful = predictions.some(
               (p) =>
                 (["Porn", "Hentai", "Sexy"].includes(p.className) && p.probability > 0.7) ||
@@ -34,11 +35,13 @@ const MessageInput = () => {
             );
             resolve(harmful);
           } catch (error) {
+            console.error("NSFWJS Classification Error:", error);
             resolve(false);
           }
         };
 
         img.onerror = () => {
+          console.error("Error loading image for NSFW detection.");
           return false;
         }
 
@@ -90,7 +93,6 @@ const MessageInput = () => {
         }
         try {
           await sendMessage({
-            // text: text.trim(),
             text: cleanedText,
             image: imagePreview,
           });
@@ -144,7 +146,6 @@ const MessageInput = () => {
                 onInput={(e) => {
                   e.target.style.height = "auto";
                   e.target.style.height = `${e.target.scrollHeight}px`;
-                  // e.target.style.height = `${Math.min(e.target.scrollHeight, 150)}px`;
                   const maxHeight = 150;
                   if (e.target.scrollHeight > maxHeight) {
                     e.target.style.height = `${maxHeight}px`; // Limit height to maxHeight
@@ -175,7 +176,6 @@ const MessageInput = () => {
             disabled = {loading} 
             >
             {loading ? "..." : <Image size={25} />}
-            {/* <Image size={25} /> */}
           </button>
             </div>
             <button 

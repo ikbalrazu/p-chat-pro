@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import {Routes, Route, Navigate, Outlet} from 'react-router-dom';
+import {Routes, Route, Navigate} from 'react-router-dom';
 import SignUp from './pages/SignUp';
 import Login from './pages/Login';
 import HomePage from './pages/HomePage';
@@ -10,22 +10,9 @@ import ForgotPassword from './components/forgotpassword/ForgotPassword';
 import ResetPassword from './components/forgotpassword/ResetPassword';
 
 const App = () => {
-  const {authUser, checkAuth, isCheckingAuth, friendList, onlineUsers} = useAuthStore();
-  
-  console.log(isCheckingAuth);
+  const {authUser, checkAuth, isCheckingAuth} = useAuthStore();
 
   useEffect(()=>{
-    // async function checkAuthUser() {
-    //   await checkAuth();
-    // }
-    
-    // console.log(authUser);
-    // if(authUser){
-    //   console.log("authenticated user");
-    // }else{
-    //   console.log("not authenticated user");
-    // }
-    // checkAuthUser();
     checkAuth(); 
   },[checkAuth]);
 
@@ -41,8 +28,6 @@ const App = () => {
   return (
     <div>
 
-      {/* <Navbar/> */}
-
       <Routes>
       <Route path='/' element={authUser ? <HomePage/> : <Navigate to="/login"/>}/>
       <Route path='/signup' element={!authUser ? <SignUp/> : <Navigate to="/" />}/>
@@ -55,9 +40,9 @@ const App = () => {
       position="top-center"
       reverseOrder={false} 
       />
-      {/* <Outlet/> */}
+      
     </div>
   )
 }
 
-export default App
+export default App;

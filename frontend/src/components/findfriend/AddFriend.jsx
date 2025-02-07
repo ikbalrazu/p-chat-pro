@@ -122,30 +122,6 @@ const AddFriend = () => {
           />
         </div>
 
-        {/* <div className='flex justify-between gap-5'>
-          <button
-          className={`px-4 py-2 rounded-md ${
-            activeComponent === "Add" ? "bg-blue-700 text-white" : "bg-blue-500 text-white"
-          }`}
-          onClick={() => setActiveComponent("Add")}
-          >Add
-          </button>
-          <button
-          className={`px-4 py-2 rounded-md ${
-            activeComponent === "Request" ? "bg-green-700 text-white" : "bg-green-500 text-white"
-          }`}
-          onClick={() => setActiveComponent("Request")}
-          >Request</button>
-          <button
-          className={`px-4 py-2 rounded-md ${
-            activeComponent === "SendRequest" ? "bg-purple-700 text-white" : "bg-purple-500 text-white"
-          }`}
-          onClick={() => setActiveComponent("SendRequest")}
-          >Send Request</button>
-        </div> */}
-        {/* Render the active component */}
-        {/* <div className="mt-6 w-full">{renderActiveComponent()}</div> */}
-
       </div>
 
       <div
@@ -166,13 +142,6 @@ const AddFriend = () => {
                 <div
                   className="w-12 h-12 text-white rounded-full border relative items-center justify-center"
                 >
-                  {/* <img
-                    src={user.profilePic || "https://randomuser.me/api/portraits/men/1.jpg"}
-                    width="45"
-                    height="45"
-                    alt={user?.fullName}
-                    className='overflow-hidden rounded-full'
-                  /> */}
                   <Avatar
                     width={48}
                     height={48}
