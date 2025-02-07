@@ -48,14 +48,8 @@ const App = () => {
       <Route path='/signup' element={!authUser ? <SignUp/> : <Navigate to="/" />}/>
       <Route path='/login' element={!authUser ? <Login/> : <Navigate to="/" />}/>
       <Route path='/forgot-password' element={!authUser ? <ForgotPassword/> : <Navigate to="/" />}/>
-      {/* <Route path='/forgot-password/otp-code-verify' element={!authUser ? <OTPCodeVerify/> : <Navigate to="/" />}/> */}
       <Route path='/forgot-password/reset-password/:id/:token' element={!authUser ? <ResetPassword/> : <Navigate to="/" />}/>
-      {/* <Route path='/conversation' element={authUser ? <Conversation/> : <Navigate to="/login" />}/>
-      <Route path='/settings' element={authUser ? <SettingsPage/> : <Navigate to="/login"/>}/>
-      <Route path='/profile' element={authUser ? <ProfilePage/> : <Navigate to="/login"/>}/> */}
       </Routes>
-
-      
 
       <Toaster
       position="top-center"

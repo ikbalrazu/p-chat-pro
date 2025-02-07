@@ -17,11 +17,6 @@ const HomePage = () => {
 
   return (
     <div className="flex h-screen bg-gray-100">
-     
-    {/* <DesktopSidebar/> */}
-    {/* {sidebarVisible && (
-      <Sidebar/>
-    )} */}
 
     <div className={`${sidebarVisible || 'hidden'} md:flex`}>
       <Sidebar/>
@@ -29,16 +24,6 @@ const HomePage = () => {
     
 
     <div 
-    // className="
-    //   md:flex 
-    //   h-screen 
-    //   w-80 
-    //   bg-white
-    //   dark:bg-gray-800  
-    //   border-r 
-    //   border-gray-300  
-    //   flex-col
-    // "
     className={`
       ${selectedUser ? "hidden md:flex" : "flex"}
       flex-col h-full md:w-80 w-full bg-white dark:bg-gray-800 border-r border-gray-300`}
