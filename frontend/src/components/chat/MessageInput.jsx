@@ -58,20 +58,27 @@ const MessageInput = () => {
           toast.error("Please select an image file");
           return;
         }
+
+        if (file && file.size > 2 * 1024 * 1024) { // Limit to 2MB
+          toast.error("File size exceeds 2MB. Please choose a smaller file.");
+          e.target.value = "";
+          return;
+        }
     
         const reader = new FileReader();
 
         reader.onloadend = async()=>{
           setLoading(true);
-          const imageBase64 = reader.result;
-          const isHarmful = await checkImageForHarmfulness(imageBase64);
-          if(isHarmful){
-            toast.error("Harmful content detected. Please choose another image.");
-            setImagePreview(null);
-            if (fileInputRef.current) fileInputRef.current.value = "";
-          }else{
-            setImagePreview(reader.result);
-          }
+          // const imageBase64 = reader.result;
+          // const isHarmful = await checkImageForHarmfulness(imageBase64);
+          // if(isHarmful){
+          //   toast.error("Harmful content detected. Please choose another image.");
+          //   setImagePreview(null);
+          //   if (fileInputRef.current) fileInputRef.current.value = "";
+          // }else{
+          //   setImagePreview(reader.result);
+          // }
+          setImagePreview(reader.result);
           setLoading(false);
         }
         reader.readAsDataURL(file);
