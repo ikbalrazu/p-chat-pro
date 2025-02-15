@@ -1,7 +1,5 @@
 import React from 'react'
 import { MessageSquare } from "lucide-react";
-import { NavLink } from 'react-router-dom';
-import { IoIosArrowBack } from "react-icons/io";
 
 const NotSelectedUser = () => {
   return (

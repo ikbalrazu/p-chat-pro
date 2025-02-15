@@ -34,11 +34,6 @@ const Upload_Profile = () => {
   return (
     <div className="flex flex-col items-center">
       <div className="relative w-32 h-32 group p-1 mt-2 rounded-full">
-        {/* <img
-            src={preview || authUser?.profilePic}
-            alt="Profile"
-            className="w-full h-full object-cover rounded-full border border-gray-300"
-          /> */}
         <div className='w-full h-full object-cover rounded-full border border-gray-300 overflow-hidden'>
         <Avatar
           width={128}
