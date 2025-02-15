@@ -23,6 +23,7 @@
     "mongoose": "^8.8.4",
     "nodemailer": "^6.10.0",
     "nodemon": "^3.1.7",
+    "p-chat-pro": "file:..",
     "pchat-pro": "file:..",
     "socket.io": "^4.8.1"
   },
